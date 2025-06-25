@@ -1,0 +1,11 @@
+
+export default function Footer() {
+
+    const date = String(new Date().getFullYear());
+
+    return(
+        <div className="text-center p-4 z-0">
+            © {date} Andréanne Fournier | All rights Reserved
+        </div>
+    );
+}
