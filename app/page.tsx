@@ -10,6 +10,7 @@ const initialLists: { id: number, name: string, todos: Todo[]; }[] = [];
 export default function Home() {
 
   const { lists, dispatch } = useTodo();
+  console.log(lists);
   const [listName, setListName] = useState<string>("");
   const [listNameError, setListNameError] = useState<string>("");
   const [isVisible, setIsVisible] = useState<Boolean>(false);
@@ -93,5 +94,3 @@ export default function Home() {
     </div>
   );
 }
-
-//font-[family-name:var(--font-geist-sans)]

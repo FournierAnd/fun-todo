@@ -55,7 +55,7 @@ export default function ToDo({ todoId, text, listId, dispatch }: ToDoProps) {
                             className="border-2 border-black rounded ml-2 pl-2"
                         />
                     ) : (
-                        <span className="break-words max-w-[225px] pl-2"> {text} </span>
+                        <span className="break-words max-w-[225px] text-lg pl-2"> {text} </span>
                     )}
                 </div>
                 <div className="inline-flex flex-nowrap">

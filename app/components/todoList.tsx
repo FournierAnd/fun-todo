@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import ToDo from "./todo";
-import { MdClear, MdEdit, MdSave } from "react-icons/md";
+import { MdClear, MdColorLens, MdEdit, MdSave } from "react-icons/md";
 import { Todo } from "../reducers/listReducer";
 
 interface ToDoListProps {
@@ -20,7 +20,18 @@ export default function ToDoList({ id, name, todos, dispatch }: ToDoListProps) {
     const [addTodoError, setAddTodoError] = useState("");
     const [showAlert, setShowAlert] = useState<Boolean>(false);
     const newTodoRef = useRef<HTMLDivElement>(null);
-    const deleteListRef = useRef<HTMLDivElement>(null);
+
+    const [color, setColor] = useState("ffe97a");
+    const [isChangingColor, setIsChangingColor] = useState(false);
+
+    const availableColors = [
+        "ffe97a",
+        "f7a6c2",
+        "33d7d4",
+        "b5e28c",
+        "ffa970",
+        "d1b7e6",
+    ];
 
     useEffect(() => {
 
@@ -62,6 +73,20 @@ export default function ToDoList({ id, name, todos, dispatch }: ToDoListProps) {
         setIsEditing(false);
     }
 
+    const handleChangeListColor = (color: string) => {
+
+        dispatch({
+            type: 'change_color',
+            list: {
+                id,
+                color: color,
+            }
+        })
+
+        setColor(color);
+
+    }
+
     const handleAddTodo = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
 
@@ -81,81 +106,107 @@ export default function ToDoList({ id, name, todos, dispatch }: ToDoListProps) {
     }
 
     return (
-        <div className="flex flex-col min-h-[250px] min-w-[250px] border bg-white shadow-md rounded">
-            <button type="button" onClick={() => setShowAlert(true)} className="place-self-end p-1 cursor-pointer">
-                <MdClear size="1.5rem" />
-            </button>
-            {isEditing ? (
-                <div className="inline-flex justify-center p-2">
-                    <form onSubmit={handleEditList}>
-                        <input
-                            type="text"
-                            name="edited-name"
-                            value={newName}
-                            onChange={(e) => {
-                                setNewName(e.target.value);
-                                if (editError) setEditError("");
-                            }}
-                            onKeyDown={(e) => {
-                                if (e.key === 'Enter') handleEditList(e);
-                            }}
-                            className="border-2 border-black rounded mr-2"
-                        />
-                        <button type="submit" className="cursor-pointer"><MdSave /></button>
-                        <button type="button" onClick={() => {setNewName(name); setIsEditing(false);}} className="cursor-pointer"><MdClear /></button>
-
-                        {editError && (
-                            <p className="text-red-500 text-sm mt-1">{editError}</p>
-                        )}
-                    </form>
+        <div>
+            {isChangingColor ? (
+                <div className="flex flex-row w-[300px] h-[50px] gap-2 p-2 mb-2">
+                    {availableColors.map((c) => (
+                        <button
+                            key={c}
+                            onClick={() => handleChangeListColor(c)}
+                            className={`w-[40px] h-[40px] rounded-full border-2 ${
+                                color === c ? 'border-black scale-110' : 'border-transparent'
+                            }`}
+                            style={{ backgroundColor: `#${c}` }}
+                        >
+                        </button>
+                    ))}
                 </div>
             ) : (
-                <div className="inline-flex justify-center p-2">
-                    <h1 className="mr-2"> {name} </h1>
-                    <button type="button" onClick={() => setIsEditing(true)} className="cursor-pointer"><MdEdit /></button>
-                </div>
+                <></>
             )}
-            <div className="flex flex-col min-h-[175px] p-2">
-                <div className="flex flex-col justify-center items-center relative">
-                    {isVisible && (
-                        <div ref={newTodoRef} className="absolute z-10 flex items-center border p-4 bg-white shadow-lg rounded">
-                            <form onSubmit={handleAddTodo}>
-                                <input
-                                    type="text"
-                                    name="new-todo"
-                                    placeholder="Name your new todo"
-                                    value={todoText}
-                                    onChange={(e) => {
-                                        setTodoText(e.target.value);
-                                        if (addTodoError) setAddTodoError("");
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') handleAddTodo(e);
-                                    }}
-                                    className="border rounded mr-2 pl-1"
-                                />
-                                <button type="button" onClick={() => setIsVisible(false)} className="cursor-pointer border p-2 rounded mr-2">Cancel</button>
-                                <button type="submit" className="cursor-pointer border p-2 rounded">Add</button>
-                                {addTodoError && (
-                                    <p className="text-red-500 text-sm mt-1">{addTodoError}</p>
-                                )}
-                            </form>
-                        </div>
-                    )}
-                    {showAlert && (
-                        <div ref={deleteListRef} className="absolute z-10 flex items-center border p-4 bg-white shadow-lg rounded">
-                            <span className="mr-2">Are you sure you want to delete your todo list?</span>
-                            <button type="button" onClick={() => setShowAlert(false)} className="cursor-pointer border p-2 rounded mr-2">Cancel</button>
-                            <button type="button" onClick={() => dispatch({ type: 'delete_list', id })} className="cursor-pointer border p-2 rounded">Delete</button>
-                        </div>
-                    )}
+            <div className="flex flex-col min-h-[250px] min-w-[250px] border bg-white shadow-lg rounded"
+                style={{ boxShadow: `0 4px 6px -1px #${color}` }}
+            >
+                <div className="flex flex-row justify-end">
+                    <button type="button" onClick={() => setIsChangingColor((prev) => !prev)} className="place-self-end p-1 c">
+                        <MdColorLens size="1.5rem" />
+                    </button>
+                    <button type="button" onClick={() => setShowAlert(true)} className="place-self-end p-1 cursor-pointer">
+                        <MdClear size="1.5rem" />
+                    </button>
                 </div>
-                {[...todos].reverse().map(t => <ToDo key={t.todoId} todoId={t.todoId} text={t.text} listId={id} dispatch={dispatch} />)}
-            </div>
-            <div className="place-self-end p-2">
-                <button type="button" onClick={() => setIsVisible(true)} className="text-center cursor-pointer border p-2 rounded">
-                    Add Todo
-                </button>
+                {isEditing ? (
+                    <div className="inline-flex justify-center p-2">
+                        <form onSubmit={handleEditList}>
+                            <input
+                                type="text"
+                                name="edited-name"
+                                value={newName}
+                                onChange={(e) => {
+                                    setNewName(e.target.value);
+                                    if (editError) setEditError("");
+                                }}
+                                onKeyDown={(e) => {
+                                    if (e.key === 'Enter') handleEditList(e);
+                                }}
+                                className="border-2 border-black rounded mr-2"
+                            />
+                            <button type="submit" className="cursor-pointer"><MdSave /></button>
+                            <button type="button" onClick={() => { setNewName(name); setIsEditing(false); }} className="cursor-pointer"><MdClear /></button>
+
+                            {editError && (
+                                <p className="text-red-500 text-sm mt-1">{editError}</p>
+                            )}
+                        </form>
+                    </div>
+                ) : (
+                    <div className="inline-flex justify-center p-2">
+                        <h1 className="mr-2 text-xl"> {name} </h1>
+                        <button type="button" onClick={() => setIsEditing(true)} className="cursor-pointer"><MdEdit /></button>
+                    </div>
+                )}
+                <div className="flex flex-col min-h-[175px] p-2">
+                    <div className="flex flex-col justify-center items-center relative">
+                        {isVisible && (
+                            <div ref={newTodoRef} className="absolute z-10 flex items-center border p-4 bg-white shadow-lg rounded">
+                                <form onSubmit={handleAddTodo}>
+                                    <input
+                                        type="text"
+                                        name="new-todo"
+                                        placeholder="Name your new todo"
+                                        value={todoText}
+                                        onChange={(e) => {
+                                            setTodoText(e.target.value);
+                                            if (addTodoError) setAddTodoError("");
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') handleAddTodo(e);
+                                        }}
+                                        className="border rounded mr-2 pl-1"
+                                    />
+                                    <button type="button" onClick={() => setIsVisible(false)} className="cursor-pointer border p-2 rounded mr-2">Cancel</button>
+                                    <button type="submit" className="cursor-pointer border p-2 rounded">Add</button>
+                                    {addTodoError && (
+                                        <p className="text-red-500 text-sm mt-1">{addTodoError}</p>
+                                    )}
+                                </form>
+                            </div>
+                        )}
+                        {showAlert && (
+                            <div className="absolute z-10 flex items-center border p-4 bg-white shadow-lg rounded">
+                                <span className="mr-2">Are you sure you want to delete your todo list?</span>
+                                <button type="button" onClick={() => setShowAlert(false)} className="cursor-pointer border p-2 rounded mr-2">Cancel</button>
+                                <button type="button" onClick={() => dispatch({ type: 'delete_list', id })} className="cursor-pointer border p-2 rounded">Delete</button>
+                            </div>
+                        )}
+                    </div>
+                    {[...todos].reverse().map(t => <ToDo key={t.todoId} todoId={t.todoId} text={t.text} listId={id} dispatch={dispatch} />)}
+                </div>
+                <div className="place-self-end p-2">
+                    <button type="button" onClick={() => setIsVisible(true)} className="text-center cursor-pointer border p-2 rounded">
+                        Add Todo
+                    </button>
+                </div>
             </div>
         </div>
     );

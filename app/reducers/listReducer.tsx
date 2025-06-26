@@ -8,6 +8,7 @@ export type Todo = {
 export type List = {
     id: number;
     name: string;
+    color: string;
     todos: Todo[];
 }
 
@@ -16,6 +17,7 @@ export type Action =
     | { type: 'add_list'; id: number; name: string }
     | { type: 'edit_list'; list: { id: number; name: string } }
     | { type: 'delete_list'; id: number }
+    | { type: 'change_color'; list: { id: number; color: string } }
     | { type: 'add_todo'; listId: number; text: string }
     | { type: 'edit_todo'; listId: number; todo: Todo }
     | { type: 'delete_todo'; listId: number; todoId: number };
@@ -29,6 +31,7 @@ export default function listReducer(lists: List[], action: Action): List[] {
             return [...lists, {
                 id: action.id,
                 name: action.name,
+                color: "ffe97a",
                 todos: [],
             }];
         }
@@ -41,6 +44,13 @@ export default function listReducer(lists: List[], action: Action): List[] {
         }
         case 'delete_list': {
             return lists.filter((list) => list.id !== action.id);
+        }
+        case 'change_color': {
+            return lists.map((list) =>
+                list.id === action.list.id
+                    ? { ...list, color: action.list.color }
+                    : list
+            );
         }
         case 'add_todo': {
             return lists.map((list) =>

@@ -2,12 +2,12 @@
 import { createContext, useContext, useReducer, useEffect, ReactNode, useState } from "react";
 import listReducer, { List, Todo, Action } from "../reducers/listReducer";
 
-const initialLists: { id: number, name: string, todos: Todo[]; }[] = [];
+const initialLists: { id: number, name: string, color: string, todos: Todo[]; }[] = [];
 
 const localStorageKey = "fun-todo-data";
 
 const TodoContext = createContext<{
-    lists: { id: number, name: string, todos: Todo[]; }[];
+    lists: { id: number, name: string, color: string, todos: Todo[]; }[];
     dispatch: React.Dispatch<Action>;
 } | null>(null);
 
