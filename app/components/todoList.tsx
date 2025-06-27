@@ -2,15 +2,17 @@ import { useState, useRef, useEffect } from "react";
 import ToDo from "./todo";
 import { MdClear, MdColorLens, MdEdit, MdSave } from "react-icons/md";
 import { Todo } from "../reducers/listReducer";
+import { useTodo } from "../contexts/todoContext";
 
 interface ToDoListProps {
     id: number;
     name: string;
+    color: string;
     todos: Todo[];
     dispatch: React.Dispatch<any>;
 }
 
-export default function ToDoList({ id, name, todos, dispatch }: ToDoListProps) {
+export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListProps) {
 
     const [todoText, setTodoText] = useState("");
     const [newName, setNewName] = useState(name);
@@ -21,7 +23,7 @@ export default function ToDoList({ id, name, todos, dispatch }: ToDoListProps) {
     const [showAlert, setShowAlert] = useState<Boolean>(false);
     const newTodoRef = useRef<HTMLDivElement>(null);
 
-    const [color, setColor] = useState("ffe97a");
+    const [listColor, setListColor] = useState<string>(color ? color : "ffe97a");
     const [isChangingColor, setIsChangingColor] = useState(false);
 
     const availableColors = [
@@ -83,7 +85,7 @@ export default function ToDoList({ id, name, todos, dispatch }: ToDoListProps) {
             }
         })
 
-        setColor(color);
+        setListColor(color);
 
     }
 
@@ -113,9 +115,8 @@ export default function ToDoList({ id, name, todos, dispatch }: ToDoListProps) {
                         <button
                             key={c}
                             onClick={() => handleChangeListColor(c)}
-                            className={`w-[40px] h-[40px] rounded-full border-2 ${
-                                color === c ? 'border-black scale-110' : 'border-transparent'
-                            }`}
+                            className={`w-[40px] h-[40px] rounded-full border-2 ${listColor === c ? 'border-black scale-110' : 'border-transparent'
+                                }`}
                             style={{ backgroundColor: `#${c}` }}
                         >
                         </button>
@@ -125,13 +126,23 @@ export default function ToDoList({ id, name, todos, dispatch }: ToDoListProps) {
                 <></>
             )}
             <div className="flex flex-col min-h-[250px] min-w-[250px] border bg-white shadow-lg rounded"
-                style={{ boxShadow: `0 4px 6px -1px #${color}` }}
+                style={{ boxShadow: `-7px 7px #${listColor}` }}
             >
                 <div className="flex flex-row justify-end">
-                    <button type="button" onClick={() => setIsChangingColor((prev) => !prev)} className="place-self-end p-1 c">
+                    <button
+                        type="button"
+                        onClick={() => setIsChangingColor((prev) => !prev)}
+                        style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                        className="text-black hover:text-[var(--dynamic-color)] place-self-end p-1 cursor-pointer"
+                    >
                         <MdColorLens size="1.5rem" />
                     </button>
-                    <button type="button" onClick={() => setShowAlert(true)} className="place-self-end p-1 cursor-pointer">
+                    <button 
+                        type="button"
+                        onClick={() => setShowAlert(true)} 
+                        style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                        className="text-black hover:text-[var(--dynamic-color)] place-self-end p-1 cursor-pointer"
+                    >
                         <MdClear size="1.5rem" />
                     </button>
                 </div>
@@ -149,10 +160,23 @@ export default function ToDoList({ id, name, todos, dispatch }: ToDoListProps) {
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') handleEditList(e);
                                 }}
-                                className="border-2 border-black rounded mr-2"
+                                className="border-2 border-black rounded mr-2 pl-1"
                             />
-                            <button type="submit" className="cursor-pointer"><MdSave /></button>
-                            <button type="button" onClick={() => { setNewName(name); setIsEditing(false); }} className="cursor-pointer"><MdClear /></button>
+                            <button 
+                                type="submit" 
+                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                className="text-black hover:text-[var(--dynamic-color)] cursor-pointer"
+                            >
+                                <MdSave />
+                            </button>
+                            <button 
+                                type="button" 
+                                onClick={() => { setNewName(name); setIsEditing(false); }} 
+                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                className="text-black hover:text-[var(--dynamic-color)] cursor-pointer"
+                            >
+                                <MdClear />
+                            </button>
 
                             {editError && (
                                 <p className="text-red-500 text-sm mt-1">{editError}</p>
@@ -162,7 +186,14 @@ export default function ToDoList({ id, name, todos, dispatch }: ToDoListProps) {
                 ) : (
                     <div className="inline-flex justify-center p-2">
                         <h1 className="mr-2 text-xl"> {name} </h1>
-                        <button type="button" onClick={() => setIsEditing(true)} className="cursor-pointer"><MdEdit /></button>
+                        <button 
+                            type="button" 
+                            onClick={() => setIsEditing(true)}
+                            style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                            className="text-black hover:text-[var(--dynamic-color)] cursor-pointer"
+                        >
+                            <MdEdit />
+                        </button>
                     </div>
                 )}
                 <div className="flex flex-col min-h-[175px] p-2">
@@ -203,7 +234,12 @@ export default function ToDoList({ id, name, todos, dispatch }: ToDoListProps) {
                     {[...todos].reverse().map(t => <ToDo key={t.todoId} todoId={t.todoId} text={t.text} listId={id} dispatch={dispatch} />)}
                 </div>
                 <div className="place-self-end p-2">
-                    <button type="button" onClick={() => setIsVisible(true)} className="text-center cursor-pointer border p-2 rounded">
+                    <button 
+                        type="button" 
+                        onClick={() => setIsVisible(true)} 
+                        style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                        className="text-center cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] p-2 rounded"
+                    >
                         Add Todo
                     </button>
                 </div>

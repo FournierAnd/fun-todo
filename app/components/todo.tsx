@@ -52,7 +52,7 @@ export default function ToDo({ todoId, text, listId, dispatch }: ToDoProps) {
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') handleEdit();
                             }}
-                            className="border-2 border-black rounded ml-2 pl-2"
+                            className="border-2 border-black rounded ml-2 pl-1"
                         />
                     ) : (
                         <span className="break-words max-w-[225px] text-lg pl-2"> {text} </span>

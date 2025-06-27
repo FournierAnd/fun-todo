@@ -2,15 +2,11 @@
 import { useEffect, useReducer, useRef, useState } from "react";
 import ToDoList from "./components/todoList";
 import AddButtonDiv from "./components/addButton";
-import listReducer, { Todo } from "./reducers/listReducer";
 import { useTodo } from "./contexts/todoContext";
-
-const initialLists: { id: number, name: string, todos: Todo[]; }[] = [];
 
 export default function Home() {
 
   const { lists, dispatch } = useTodo();
-  console.log(lists);
   const [listName, setListName] = useState<string>("");
   const [listNameError, setListNameError] = useState<string>("");
   const [isVisible, setIsVisible] = useState<Boolean>(false);
@@ -90,7 +86,7 @@ export default function Home() {
           </form>
         </div>
       )}
-      {[...lists].reverse().map(l => <ToDoList key={l.id} id={l.id} name={l.name} todos={l.todos} dispatch={dispatch} />)}
+      {[...lists].reverse().map(l => <ToDoList key={l.id} id={l.id} name={l.name} color={l.color} todos={l.todos} dispatch={dispatch} />)}
     </div>
   );
 }
