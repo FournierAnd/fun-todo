@@ -61,7 +61,7 @@ export default function Home() {
         <div 
           ref={modalRef}
           style={{ boxShadow: `7px 7px #ffe97a` }}
-          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex items-center border p-4 bg-white shadow-lg rounded"
+          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex items-center border p-4 bg-white shadow-lg rounded"
         >
           <form onSubmit={handleSubmit}>
             <label>

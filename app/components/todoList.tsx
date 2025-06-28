@@ -201,7 +201,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                         {isVisible && (
                             <div ref={newTodoRef}
                                 style={{ boxShadow: `7px 7px #${listColor}` }} 
-                                className="absolute z-10 flex items-center border p-4 bg-white shadow-lg rounded"
+                                className="absolute z-20 flex items-center border p-4 bg-white shadow-lg rounded"
                             >
                                 <form onSubmit={handleAddTodo}>
                                     <input
@@ -242,7 +242,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                         {showAlert && (
                             <div
                                 style={{ boxShadow: `7px 7px #${listColor}` }} 
-                                className="absolute z-10 flex items-center border p-4 bg-white shadow-lg rounded"
+                                className="absolute z-20 flex items-center border p-4 bg-white shadow-lg rounded"
                             >
                                 <span className="mr-2">Are you sure you want to delete your todo list?</span>
                                 <button 

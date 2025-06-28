@@ -116,7 +116,7 @@ export default function ToDo({ todoId, text, listColor, listId, dispatch }: ToDo
                 {showAlert && (
                     <div ref={deleteTodoRef} 
                         style={{ boxShadow: `7px 7px #${listColor}` }}                        
-                        className="absolute z-10 flex items-center border p-4 bg-white shadow-lg rounded"
+                        className="absolute z-20 flex items-center border p-4 bg-white shadow-lg rounded"
                     >
                         <span className="mr-2">Delete this todo?</span>
                         <button 
