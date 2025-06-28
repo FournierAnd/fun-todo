@@ -4,11 +4,12 @@ import { MdEdit, MdDelete, MdSave, MdClear } from "react-icons/md";
 interface ToDoProps {
     todoId: number;
     text: string;
+    listColor: string;
     listId: number;
     dispatch: React.Dispatch<any>;
 }
 
-export default function ToDo({ todoId, text, listId, dispatch }: ToDoProps) {
+export default function ToDo({ todoId, text, listColor, listId, dispatch }: ToDoProps) {
 
     const [isEditing, setIsEditing] = useState(false);
     const [todoEditError, setTodoEditError] = useState("");
@@ -61,15 +62,43 @@ export default function ToDo({ todoId, text, listId, dispatch }: ToDoProps) {
                 <div className="inline-flex flex-nowrap">
                     {isEditing ? (
                         <>
-                            <button type="button" onClick={handleEdit} className="cursor-pointer"><MdSave /></button>
-                            <button type="button" onClick={() => {setNewText(text); setIsEditing(false);}} className="cursor-pointer"><MdClear /></button>
+                            <button
+                                type="button"
+                                onClick={handleEdit}
+                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                className="text-black hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
+                            >
+                                <MdSave />
+                            </button>
+                            <button 
+                                type="button"
+                                onClick={() => { setNewText(text); setIsEditing(false); }}
+                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                className="text-black hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
+                            >
+                                <MdClear />
+                            </button>
                         </>
                     ) : (
                         <>
-                            <button type="button" onClick={() => setIsEditing(true)} className="cursor-pointer"><MdEdit /></button>
-                            <button type="button" onClick={() => setShowAlert(true)} className="cursor-pointer"><MdDelete /></button>
+                            <button
+                                type="button"
+                                onClick={() => setIsEditing(true)}
+                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                className="text-black hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
+                            >
+                                <MdEdit />
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => setShowAlert(true)}
+                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                className="text-black hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
+                            >
+                                <MdDelete />
+                            </button>
                         </>
-                    )}                    
+                    )}
                 </div>
             </div>
             {isEditing ? (
@@ -85,10 +114,27 @@ export default function ToDo({ todoId, text, listId, dispatch }: ToDoProps) {
             )}
             <div className="flex flex-col justify-center items-center">
                 {showAlert && (
-                    <div ref={deleteTodoRef} className="absolute z-10 flex items-center border p-4 bg-white shadow-lg rounded">
+                    <div ref={deleteTodoRef} 
+                        style={{ boxShadow: `7px 7px #${listColor}` }}                        
+                        className="absolute z-10 flex items-center border p-4 bg-white shadow-lg rounded"
+                    >
                         <span className="mr-2">Delete this todo?</span>
-                        <button type="button" onClick={() => setShowAlert(false)} className="cursor-pointer border p-2 rounded mr-2">Cancel</button>
-                        <button type="button" onClick={() => dispatch({ type: 'delete_todo', listId, todoId })} className="cursor-pointer border p-2 rounded">Delete</button>
+                        <button 
+                            type="button" 
+                            onClick={() => setShowAlert(false)}
+                            style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties} 
+                            className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded mr-2"
+                        >
+                            Cancel
+                        </button>
+                        <button 
+                            type="button" 
+                            onClick={() => dispatch({ type: 'delete_todo', listId, todoId })}
+                            style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties} 
+                            className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded"
+                        >
+                            Delete
+                        </button>
                     </div>
                 )}
             </div>

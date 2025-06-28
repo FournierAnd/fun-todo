@@ -58,7 +58,11 @@ export default function Home() {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
       <AddButtonDiv setIsVisible={setIsVisible} />
       {isVisible && (
-        <div ref={modalRef} className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex items-center border p-4 bg-white shadow-lg rounded">
+        <div 
+          ref={modalRef}
+          style={{ boxShadow: `7px 7px #ffe97a` }}
+          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 flex items-center border p-4 bg-white shadow-lg rounded"
+        >
           <form onSubmit={handleSubmit}>
             <label>
               Name your new todo list: 
@@ -77,8 +81,8 @@ export default function Home() {
                 className="border rounded mx-2 pl-1"
               />
             </label>
-            <button type="button" onClick={() => setIsVisible(false)} className="cursor-pointer border p-2 rounded mr-2">Cancel</button>
-            <button type="submit" className="cursor-pointer border p-2 rounded">Add</button>
+            <button type="button" onClick={() => setIsVisible(false)} className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] transition duration-500 p-2 rounded mr-2">Cancel</button>
+            <button type="submit" className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] transition duration-500 p-2 rounded">Add</button>
             
             {listNameError && (
               <p className="text-red-500 text-sm mt-1">{listNameError}</p>
