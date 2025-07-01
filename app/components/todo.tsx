@@ -116,25 +116,27 @@ export default function ToDo({ todoId, text, listColor, listId, dispatch }: ToDo
                 {showAlert && (
                     <div ref={deleteTodoRef} 
                         style={{ boxShadow: `7px 7px #${listColor}` }}                        
-                        className="absolute z-20 flex items-center border p-4 bg-white shadow-lg rounded"
+                        className="absolute z-20 flex flex-col items-center border p-4 bg-white shadow-lg rounded"
                     >
-                        <span className="mr-2">Delete this todo?</span>
-                        <button 
-                            type="button" 
-                            onClick={() => setShowAlert(false)}
-                            style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties} 
-                            className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded mr-2"
-                        >
-                            Cancel
-                        </button>
-                        <button 
-                            type="button" 
-                            onClick={() => dispatch({ type: 'delete_todo', listId, todoId })}
-                            style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties} 
-                            className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded"
-                        >
-                            Delete
-                        </button>
+                        <span className="mb-2 mr-2">Delete this todo?</span>
+                        <div>
+                            <button 
+                                type="button" 
+                                onClick={() => setShowAlert(false)}
+                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties} 
+                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded mr-2"
+                            >
+                                Cancel
+                            </button>
+                            <button 
+                                type="button" 
+                                onClick={() => dispatch({ type: 'delete_todo', listId, todoId })}
+                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties} 
+                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded"
+                            >
+                                Delete
+                            </button>
+                        </div>
                     </div>
                 )}
             </div>

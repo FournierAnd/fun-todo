@@ -61,11 +61,13 @@ export default function Home() {
         <div 
           ref={modalRef}
           style={{ boxShadow: `7px 7px #ffe97a` }}
-          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex items-center border p-4 bg-white shadow-lg rounded"
+          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col md:flex-row items-center border p-4 bg-white shadow-lg rounded"
         >
-          <form onSubmit={handleSubmit}>
-            <label>
-              Name your new todo list: 
+          <form onSubmit={handleSubmit} className="flex flex-col items-center w-full">
+            <label className="flex flex-col md:flex-row md:items-center w-full mb-2">
+              <span className="text-md mb-2 md:mb-1 md:mr-2 text-center md:text-left">
+                Name your new todo list: 
+              </span>
               <input
                 type="text"
                 name="list-name"
@@ -78,12 +80,13 @@ export default function Home() {
                   if (e.key === 'Enter') handleSubmit(e);
                 }}
                 placeholder="My Fun Todo list!"
-                className="border rounded mx-2 pl-1"
+                className="border rounded flex justify-center md:justify-start text-center md:text-left mx-0 md:mx-2 mb-2 pl-1"
               />
             </label>
-            <button type="button" onClick={() => setIsVisible(false)} className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] transition duration-500 p-2 rounded mr-2">Cancel</button>
-            <button type="submit" className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] transition duration-500 p-2 rounded">Add</button>
-            
+            <div className="flex justify-center">
+              <button type="button" onClick={() => setIsVisible(false)} className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] transition duration-500 p-2 rounded mr-2">Cancel</button>
+              <button type="submit" className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] transition duration-500 p-2 rounded">Add</button>
+            </div>
             {listNameError && (
               <p className="text-red-500 text-sm mt-1">{listNameError}</p>
             )}

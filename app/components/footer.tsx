@@ -5,7 +5,9 @@ export default function Footer() {
 
     return(
         <div className="flex justify-center items-center p-4 z-0">
-            © {date} Andréanne Fournier | All rights Reserved
+            © {date} Andréanne Fournier | All rights reserved
         </div>
     );
 }
+
+//Tous droits réservés
