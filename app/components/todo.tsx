@@ -60,28 +60,32 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                         />
                     ) : (
                         <div className="relative w-fit">
-                            <span className="break-words max-w-[225px] text-lg z-10 relative"> {text} </span>
-                            <AnimatePresence>
-                                {done && (
-                                    <motion.svg
-                                        initial={{ pathLength: 0 }}
-                                        animate={{ pathLength: 1 }}
-                                        exit={{ pathLength: 0 }}
-                                        transition={{ duration: 0.6, ease: "easeInOut" }}
-                                        viewBox="0 0 100 20"
-                                        className="absolute top-1/2 left-0 w-full h-[20px] -translate-y-1/2 z-10"
-                                        preserveAspectRatio="none"
+                            <span className={`${done ? "text-gray-400" : "text-black" } break-words max-w-[225px] text-lg pl-1 z-10 relative`}> {text} </span>
+                            {done && (
+                                <svg
+                                    viewBox="0 0 70 20"
+                                    className="absolute top-1/2 left-0 w-full h-[20px] -translate-y-1/2 z-10"
+                                    preserveAspectRatio="none"
+                                >
+                                    <path
+                                        d="m0 12c4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-6 8 0"
+                                        stroke="black"
+                                        strokeWidth="2"
+                                        fill="none"
+                                        strokeLinecap="round"
+                                        strokeDasharray="100"
+                                        strokeDashoffset="100"
                                     >
-                                        <path
-                                            d="m0 12c4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-6 8 0"
-                                            stroke="blue"
-                                            strokeWidth="2"
-                                            fill="none"
-                                            strokeLinecap="round"
+                                        <animate
+                                            attributeName="stroke-dashoffset"
+                                            from="100"
+                                            to="0"
+                                            dur="0.6s"
+                                            fill="freeze"
                                         />
-                                    </motion.svg>
-                                )}
-                            </AnimatePresence>
+                                    </path>
+                                </svg>
+                            )}
                         </div>
                     )}
                 </div>
