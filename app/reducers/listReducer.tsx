@@ -20,6 +20,7 @@ export type Action =
     | { type: 'change_color'; list: { id: number; color: string } }
     | { type: 'add_todo'; listId: number; text: string }
     | { type: 'edit_todo'; listId: number; todo: Todo }
+    | { type: 'toggle_todo'; listId: number; todoId: number }
     | { type: 'delete_todo'; listId: number; todoId: number };
 
 export default function listReducer(lists: List[], action: Action): List[] {
@@ -76,6 +77,20 @@ export default function listReducer(lists: List[], action: Action): List[] {
                         ...list,
                         todos: list.todos.map((todo) =>
                             todo.todoId === action.todo.todoId ? action.todo : todo
+                        ),
+                    }
+                    : list
+            );
+        }
+        case 'toggle_todo': {
+            return lists.map((list) =>
+                list.id === action.listId
+                    ? {
+                        ...list,
+                        todos: list.todos.map(todo =>
+                            todo.todoId === action.todoId
+                                ? { ...todo, done: !todo.done }
+                                : todo
                         ),
                     }
                     : list

@@ -1,8 +1,8 @@
+"use client"
 import { useState, useRef, useEffect } from "react";
 import ToDo from "./todo";
 import { MdClear, MdColorLens, MdEdit, MdSave } from "react-icons/md";
 import { Todo } from "../reducers/listReducer";
-import { useTodo } from "../contexts/todoContext";
 
 interface ToDoListProps {
     id: number;
@@ -201,7 +201,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                         {isVisible && (
                             <div ref={newTodoRef}
                                 style={{ boxShadow: `7px 7px #${listColor}` }}
-                                className="absolute z-20 flex flex-col items-center border p-4 bg-white shadow-lg rounded"
+                                className="absolute z-30 flex flex-col items-center border p-4 bg-white shadow-lg rounded"
                             >
                                 <form onSubmit={handleAddTodo} className="flex flex-col items-center w-full">
                                     <label className="flex flex-col items-center w-full mb-2">
@@ -249,7 +249,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                         {showAlert && (
                             <div
                                 style={{ boxShadow: `7px 7px #${listColor}` }}
-                                className="absolute z-20 flex flex-col items-center border p-4 bg-white shadow-lg rounded"
+                                className="absolute z-30 flex flex-col items-center border p-4 bg-white shadow-lg rounded"
                             >
                                 <span className="text-md mb-2 text-center">Are you sure you want to delete your todo list?</span>
                                 <div className="flex justify-center">
@@ -273,7 +273,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                             </div>
                         )}
                     </div>
-                    {[...todos].reverse().map(t => <ToDo key={t.todoId} todoId={t.todoId} text={t.text} listColor={listColor} listId={id} dispatch={dispatch} />)}
+                    {[...todos].reverse().map(t => <ToDo key={t.todoId} todoId={t.todoId} text={t.text} done={t.done} listColor={listColor} listId={id} dispatch={dispatch} />)}
                 </div>
                 <div className="place-self-end p-2">
                     <button

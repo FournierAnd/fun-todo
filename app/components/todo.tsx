@@ -1,15 +1,18 @@
+"use client"
 import { useRef, useState } from "react";
 import { MdEdit, MdDelete, MdSave, MdClear } from "react-icons/md";
+import { motion, AnimatePresence } from "motion/react";
 
 interface ToDoProps {
     todoId: number;
     text: string;
+    done: boolean;
     listColor: string;
     listId: number;
     dispatch: React.Dispatch<any>;
 }
 
-export default function ToDo({ todoId, text, listColor, listId, dispatch }: ToDoProps) {
+export default function ToDo({ todoId, text, done, listColor, listId, dispatch }: ToDoProps) {
 
     const [isEditing, setIsEditing] = useState(false);
     const [todoEditError, setTodoEditError] = useState("");
@@ -40,7 +43,7 @@ export default function ToDo({ todoId, text, listColor, listId, dispatch }: ToDo
         <>
             <div className="inline-flex justify-between relative">
                 <div className="inline-flex">
-                    <input type="checkbox" />
+                    <input type="checkbox" onChange={() => dispatch({ type: 'toggle_todo', listId, todoId })} checked={done} />
                     {isEditing ? (
                         <input
                             type="text"
@@ -56,7 +59,30 @@ export default function ToDo({ todoId, text, listColor, listId, dispatch }: ToDo
                             className="border-2 border-black rounded ml-2 pl-1"
                         />
                     ) : (
-                        <span className="break-words max-w-[225px] text-lg pl-2"> {text} </span>
+                        <div className="relative w-fit">
+                            <span className="break-words max-w-[225px] text-lg z-10 relative"> {text} </span>
+                            <AnimatePresence>
+                                {done && (
+                                    <motion.svg
+                                        initial={{ pathLength: 0 }}
+                                        animate={{ pathLength: 1 }}
+                                        exit={{ pathLength: 0 }}
+                                        transition={{ duration: 0.6, ease: "easeInOut" }}
+                                        viewBox="0 0 100 20"
+                                        className="absolute top-1/2 left-0 w-full h-[20px] -translate-y-1/2 z-10"
+                                        preserveAspectRatio="none"
+                                    >
+                                        <path
+                                            d="m0 12c4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-6 8 0"
+                                            stroke="blue"
+                                            strokeWidth="2"
+                                            fill="none"
+                                            strokeLinecap="round"
+                                        />
+                                    </motion.svg>
+                                )}
+                            </AnimatePresence>
+                        </div>
                     )}
                 </div>
                 <div className="inline-flex flex-nowrap">
@@ -70,7 +96,7 @@ export default function ToDo({ todoId, text, listColor, listId, dispatch }: ToDo
                             >
                                 <MdSave />
                             </button>
-                            <button 
+                            <button
                                 type="button"
                                 onClick={() => { setNewText(text); setIsEditing(false); }}
                                 style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
@@ -114,24 +140,24 @@ export default function ToDo({ todoId, text, listColor, listId, dispatch }: ToDo
             )}
             <div className="flex flex-col justify-center items-center">
                 {showAlert && (
-                    <div ref={deleteTodoRef} 
-                        style={{ boxShadow: `7px 7px #${listColor}` }}                        
-                        className="absolute z-20 flex flex-col items-center border p-4 bg-white shadow-lg rounded"
+                    <div ref={deleteTodoRef}
+                        style={{ boxShadow: `7px 7px #${listColor}` }}
+                        className="absolute z-30 flex flex-col items-center border p-4 bg-white shadow-lg rounded"
                     >
                         <span className="mb-2 mr-2">Delete this todo?</span>
                         <div>
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 onClick={() => setShowAlert(false)}
-                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties} 
+                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
                                 className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded mr-2"
                             >
                                 Cancel
                             </button>
-                            <button 
-                                type="button" 
+                            <button
+                                type="button"
                                 onClick={() => dispatch({ type: 'delete_todo', listId, todoId })}
-                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties} 
+                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
                                 className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded"
                             >
                                 Delete

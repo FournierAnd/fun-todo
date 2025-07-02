@@ -1,5 +1,5 @@
 "use client"
-import { useEffect, useReducer, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import ToDoList from "./components/todoList";
 import AddButtonDiv from "./components/addButton";
 import { useTodo } from "./contexts/todoContext";
@@ -61,7 +61,7 @@ export default function Home() {
         <div 
           ref={modalRef}
           style={{ boxShadow: `7px 7px #ffe97a` }}
-          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 flex flex-col md:flex-row items-center border p-4 bg-white shadow-lg rounded"
+          className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col md:flex-row items-center border p-4 bg-white shadow-lg rounded"
         >
           <form onSubmit={handleSubmit} className="flex flex-col items-center w-full">
             <label className="flex flex-col md:flex-row md:items-center w-full mb-2">
