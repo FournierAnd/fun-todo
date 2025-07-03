@@ -43,7 +43,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
         <>
             <div className="inline-flex justify-between relative">
                 <div className="inline-flex">
-                    <input type="checkbox" onChange={() => dispatch({ type: 'toggle_todo', listId, todoId })} checked={done} />
+                    <input style={{ accentColor: `#${listColor}`}} type="checkbox" onChange={() => dispatch({ type: 'toggle_todo', listId, todoId })} checked={done} />
                     {isEditing ? (
                         <input
                             type="text"
@@ -59,8 +59,8 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                             className="border-2 border-black rounded ml-2 pl-1"
                         />
                     ) : (
-                        <div className="relative w-fit">
-                            <span className={`${done ? "text-gray-400" : "text-black" } break-words max-w-[225px] text-lg pl-1 z-10 relative`}> {text} </span>
+                        <div className="relative ml-1 w-fit">
+                            <span className={`${done ? "text-gray-500" : "text-black"} break-words max-w-[225px] text-lg pl-1 z-10 relative`}> {text} </span>
                             {done && (
                                 <svg
                                     viewBox="0 0 70 20"
@@ -69,7 +69,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                                 >
                                     <path
                                         d="m0 12c4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-6 8 0"
-                                        stroke="black"
+                                        stroke={`#${listColor}`}
                                         strokeWidth="2"
                                         fill="none"
                                         strokeLinecap="round"
