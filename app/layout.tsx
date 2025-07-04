@@ -4,6 +4,7 @@ import "./globals.css";
 import Footer from "./components/footer";
 import { TodoProvider } from "./contexts/todoContext";
 import DotBackground from "./components/dotBackground";
+import AnimatedTitle from "./components/animatedTitle";
 
 const kalam = Kalam({
   subsets: ['latin'],
@@ -25,7 +26,7 @@ export default function RootLayout({
       <body className="relative flex flex-col min-h-screen m-1">
         <DotBackground />
           <main className="flex-grow p-4 z-10">
-            <h1 className="text-center text-6xl p-10">Fun Todo</h1>
+            <AnimatedTitle />
             <TodoProvider>
               {children}
             </TodoProvider>
