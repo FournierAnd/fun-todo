@@ -43,7 +43,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
         <>
             <div className="inline-flex justify-between relative">
                 <div className="inline-flex">
-                    <input style={{ accentColor: `#${listColor}`}} type="checkbox" onChange={() => dispatch({ type: 'toggle_todo', listId, todoId })} checked={done} />
+                    <input style={{ accentColor: `#${listColor}` }} type="checkbox" onChange={() => dispatch({ type: 'toggle_todo', listId, todoId })} checked={done} />
                     {isEditing ? (
                         <input
                             type="text"

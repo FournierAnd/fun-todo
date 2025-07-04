@@ -11,7 +11,7 @@ const TodoContext = createContext<{
     dispatch: React.Dispatch<Action>;
 } | null>(null);
 
-export function TodoProvider({ children }: {children: ReactNode }) {
+export function TodoProvider({ children }: { children: ReactNode }) {
 
     const [lists, dispatch] = useReducer(listReducer, initialLists);
     const [isLoaded, setIsLoaded] = useState(false);
@@ -38,7 +38,7 @@ export function TodoProvider({ children }: {children: ReactNode }) {
     }, [lists, isLoaded]);
 
     return (
-        <TodoContext value={{lists, dispatch}}>
+        <TodoContext value={{ lists, dispatch }}>
             {children}
         </TodoContext>
     );

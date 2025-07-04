@@ -223,26 +223,26 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                             className="border rounded flex justify-center text-center mb-2 pl-1"
                                         />
                                     </label>
-                                        <div className="flex justify-center">
-                                            <button
-                                                type="button"
-                                                onClick={() => setIsVisible(false)}
-                                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded mr-2"
-                                            >
-                                                Cancel
-                                            </button>
-                                            <button
-                                                type="submit"
-                                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded"
-                                            >
-                                                Add
-                                            </button>
-                                        </div>
-                                        {addTodoError && (
-                                            <p className="text-red-500 text-sm mt-1">{addTodoError}</p>
-                                        )}
+                                    <div className="flex justify-center">
+                                        <button
+                                            type="button"
+                                            onClick={() => setIsVisible(false)}
+                                            style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                            className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded mr-2"
+                                        >
+                                            Cancel
+                                        </button>
+                                        <button
+                                            type="submit"
+                                            style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                            className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded"
+                                        >
+                                            Add
+                                        </button>
+                                    </div>
+                                    {addTodoError && (
+                                        <p className="text-red-500 text-sm mt-1">{addTodoError}</p>
+                                    )}
                                 </form>
                             </div>
                         )}

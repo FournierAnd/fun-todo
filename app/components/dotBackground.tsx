@@ -105,10 +105,10 @@ export default function DotBackground() {
             {bouncingDots.map((dot, i) => (
                 <Fragment key={`new-${i}`}>
                     {/* White background dot */}
-                    <circle cx={dot.x} cy={dot.y} r="2" fill="#fff" style={{ opacity: prevDots  ? 0 : 1, transition: 'opacity 1s ease' }} />
+                    <circle cx={dot.x} cy={dot.y} r="2" fill="#fff" style={{ opacity: prevDots ? 0 : 1, transition: 'opacity 1s ease' }} />
 
                     {/* Animated dot */}
-                    <circle cx={dot.x} cy={dot.y} r="2" fill="#bfbfbf" style={{ opacity: prevDots  ? 0 : 1, transition: 'opacity 1s ease' }}>
+                    <circle cx={dot.x} cy={dot.y} r="2" fill="#bfbfbf" style={{ opacity: prevDots ? 0 : 1, transition: 'opacity 1s ease' }}>
                         <animate
                             attributeName="cy"
                             values={`${dot.y};${dot.y - 10};${dot.y}`}
