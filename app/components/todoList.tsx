@@ -14,17 +14,28 @@ interface ToDoListProps {
 
 export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListProps) {
 
-    const [todoText, setTodoText] = useState("");
-    const [newName, setNewName] = useState(name);
-    const [isVisible, setIsVisible] = useState<Boolean>(false);
-    const [isEditing, setIsEditing] = useState(false);
-    const [editError, setEditError] = useState("");
-    const [addTodoError, setAddTodoError] = useState("");
-    const [showAlert, setShowAlert] = useState<Boolean>(false);
-    const newTodoRef = useRef<HTMLDivElement>(null);
-
+    const [todoText, setTodoText] = useState<string>("");
+    const [newName, setNewName] = useState<string>(name);
+    const [isEditing, setIsEditing] = useState<Boolean>(false);
+    const [editError, setEditError] = useState<string>("");
+    const [addTodoError, setAddTodoError] = useState<string>("");
     const [listColor, setListColor] = useState<string>(color ? color : "ffe97a");
-    const [isChangingColor, setIsChangingColor] = useState(false);
+
+    const [modalsVisible, setModalsVisible] = useState({
+        newTodo: false,
+        changeColor: false,
+        deleteList: false,
+    });
+
+    const [shouldRender, setShouldRender] = useState({
+        newTodo: false,
+        changeColor: false,
+        deleteList: false,
+    });
+
+    const newTodoRef = useRef<HTMLDivElement>(null);
+    const changingColorRef = useRef<HTMLDivElement>(null);
+    const deleteListRef = useRef<HTMLDivElement>(null);
 
     const availableColors = [
         "ffe97a",
@@ -37,24 +48,49 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
 
     useEffect(() => {
 
-        // If the click target is not inside the modal, close it
-        const handleModalClickOutside = (event: MouseEvent) => {
-            if (newTodoRef.current && !newTodoRef.current.contains(event.target as Node)) {
-                setIsVisible(false);
-            }
+        const modals = [
+            { key: "newTodo", ref: newTodoRef },
+            { key: "changeColor", ref: changingColorRef },
+            { key: "deleteList", ref: deleteListRef },
+
+        ];
+
+        // If the click target is not inside the modal, close it		
+        const handleClickOutside = (event: MouseEvent) => {
+            modals.forEach(({ key, ref }) => {
+                if (modalsVisible[key as keyof typeof modalsVisible] && ref.current && !ref.current.contains(event.target as Node)) {
+                    setModalsVisible((prev) => ({ ...prev, [key]: false }));
+                }
+            });
         };
 
-        // If the modal is visible, add a 'mousedown' event listener
-        if (isVisible) {
-            document.addEventListener('mousedown', handleModalClickOutside);
-        }
+        document.addEventListener('mousedown', handleClickOutside);
+
+        modals.forEach(({ key }) => {
+            const isVisible = modalsVisible[key as keyof typeof modalsVisible];
+
+            // If the modal is visible, render it
+            if (isVisible) {
+
+                setShouldRender((prev) => ({ ...prev, [key]: true }));
+
+            } else if (shouldRender[key as keyof typeof shouldRender]) {
+
+                // Delay unmount for the duration of the fade-out
+                const timeout = setTimeout(() => {
+                    setShouldRender((prev) => ({ ...prev, [key]: false }));
+                }, 300); // Match Tailwind duration
+
+                return () => clearTimeout(timeout);
+            }
+        });
 
         // Clean up function to remove the 'mousedown' event listener
         return () => {
-            document.removeEventListener('mousedown', handleModalClickOutside);
+            document.removeEventListener('mousedown', handleClickOutside);
         };
 
-    }, [isVisible]);
+    }, [modalsVisible]);
 
     const handleEditList = (event: { preventDefault: () => void; }) => {
         event.preventDefault();
@@ -104,34 +140,39 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
         })
 
         setTodoText('');
-        setIsVisible(false);
+        setModalsVisible(((prev) => ({ ...prev, newTodo: false })));
     }
 
     return (
         <div>
-            {isChangingColor ? (
-                <div className="flex flex-row w-[300px] h-[50px] gap-2 p-2 mb-2">
-                    {availableColors.map((c) => (
-                        <button
-                            key={c}
-                            onClick={() => handleChangeListColor(c)}
-                            className={`w-[40px] h-[40px] rounded-full border-2 ${listColor === c ? 'border-black scale-110' : 'border-transparent'
-                                }`}
-                            style={{ backgroundColor: `#${c}` }}
-                        >
-                        </button>
-                    ))}
-                </div>
-            ) : (
-                <></>
-            )}
+            <div
+                className={`bottom-0 translate-x-[75px] -translate-y-[5px] transform transition-all duration-300
+					        ${modalsVisible.changeColor ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none translate-y-[5px]'}`}
+            >
+                {shouldRender.changeColor ? (
+                    <div ref={changingColorRef} className="flex flex-row w-[300px] h-[50px] gap-2 p-2 mb-2 z-30">
+                        {availableColors.map((c) => (
+                            <button
+                                key={c}
+                                onClick={() => handleChangeListColor(c)}
+                                className={`w-[40px] h-[40px] rounded-full border-2 ${listColor === c ? 'border-black scale-110' : 'border-transparent'
+                                    }`}
+                                style={{ backgroundColor: `#${c}` }}
+                            >
+                            </button>
+                        ))}
+                    </div>
+                ) : (
+                    <></>
+                )}
+            </div>
             <div className="flex flex-col min-h-[250px] min-w-[250px] border bg-white shadow-lg rounded"
                 style={{ boxShadow: `-7px 7px #${listColor}` }}
             >
                 <div className="flex flex-row justify-end">
                     <button
                         type="button"
-                        onClick={() => setIsChangingColor((prev) => !prev)}
+                        onClick={() => setModalsVisible((prev) => ({ ...prev, changeColor: true }))}
                         style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
                         className="text-black hover:text-[var(--dynamic-color)] transition duration-500 place-self-end p-1 cursor-pointer"
                     >
@@ -139,7 +180,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                     </button>
                     <button
                         type="button"
-                        onClick={() => setShowAlert(true)}
+                        onClick={() => setModalsVisible(((prev) => ({ ...prev, deleteList: true })))}
                         style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
                         className="text-black hover:text-[var(--dynamic-color)] transition duration-500 place-self-end p-1 cursor-pointer"
                     >
@@ -198,87 +239,98 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                 )}
                 <div className="flex flex-col min-h-[175px] p-2">
                     <div className="flex flex-col justify-center items-center relative">
-                        {isVisible && (
-                            <div ref={newTodoRef}
-                                style={{ boxShadow: `7px 7px #${listColor}` }}
-                                className="absolute z-30 flex flex-col items-center border p-4 bg-white shadow-lg rounded"
-                            >
-                                <form onSubmit={handleAddTodo} className="flex flex-col items-center w-full">
-                                    <label className="flex flex-col items-center w-full mb-2">
-                                        <span className="text-md mb-2 text-center">
-                                            Name your new todo:
-                                        </span>
-                                        <input
-                                            type="text"
-                                            name="new-todo"
-                                            placeholder="My new todo..."
-                                            value={todoText}
-                                            onChange={(e) => {
-                                                setTodoText(e.target.value);
-                                                if (addTodoError) setAddTodoError("");
-                                            }}
-                                            onKeyDown={(e) => {
-                                                if (e.key === 'Enter') handleAddTodo(e);
-                                            }}
-                                            className="border rounded flex justify-center text-center mb-2 pl-1"
-                                        />
-                                    </label>
-                                    <div className="flex justify-center">
+                        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col items-center transform transition-all duration-300
+                                        ${modalsVisible.newTodo ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none -translate-x-1/2 -translate-y-1/2'}`}
+                        >
+                            {shouldRender.newTodo && (
+                                <div ref={newTodoRef}
+                                    style={{ boxShadow: `7px 7px #${listColor}` }}
+                                    className="border p-4 bg-white shadow-lg rounded"
+                                >
+                                    <form onSubmit={handleAddTodo} className="flex flex-col items-center w-full">
+                                        <label className="flex flex-col items-center w-full mb-2">
+                                            <span className="text-md mb-2 text-center">
+                                                Name your new todo:
+                                            </span>
+                                            <input
+                                                type="text"
+                                                name="new-todo"
+                                                placeholder="My new todo..."
+                                                value={todoText}
+                                                onChange={(e) => {
+                                                    setTodoText(e.target.value);
+                                                    if (addTodoError) setAddTodoError("");
+                                                }}
+                                                onKeyDown={(e) => {
+                                                    if (e.key === 'Enter') handleAddTodo(e);
+                                                }}
+                                                className="border rounded flex justify-center text-center mb-2 pl-1"
+                                            />
+                                        </label>
+                                        <div className="flex justify-center">
+                                            <button
+                                                type="button"
+                                                onClick={() => setModalsVisible(((prev) => ({ ...prev, newTodo: false })))}
+                                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded mr-2"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                type="submit"
+                                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded"
+                                            >
+                                                Add
+                                            </button>
+                                        </div>
+                                        {addTodoError && (
+                                            <p className="text-red-500 text-sm mt-1">{addTodoError}</p>
+                                        )}
+                                    </form>
+                                </div>
+                            )}
+                        </div>
+                        <div className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col justify-center items-center transform transition-all duration-300
+                                        ${modalsVisible.deleteList ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none -translate-x-1/2 -translate-y-1/2'}`}
+                        >
+                            {shouldRender.deleteList && (
+                                <div
+                                    ref={deleteListRef}
+                                    style={{ boxShadow: `7px 7px #${listColor}` }}
+                                    className="border p-4 bg-white shadow-lg rounded"
+                                >
+                                    <div className="text-center">
+                                        <span>Are you sure you want to delete your todo list?</span>
+                                    </div>
+                                    <div className="flex flex-row justify-center mt-2">
                                         <button
                                             type="button"
-                                            onClick={() => setIsVisible(false)}
+                                            onClick={() => setModalsVisible(((prev) => ({ ...prev, deleteList: false })))}
                                             style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                            className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded mr-2"
+                                            className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 p-2 mr-2 rounded"
                                         >
                                             Cancel
                                         </button>
                                         <button
-                                            type="submit"
+                                            type="button"
+                                            onClick={() => dispatch({ type: 'delete_list', id })}
                                             style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                            className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded"
+                                            className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 p-2 rounded"
                                         >
-                                            Add
+                                            Delete
                                         </button>
                                     </div>
-                                    {addTodoError && (
-                                        <p className="text-red-500 text-sm mt-1">{addTodoError}</p>
-                                    )}
-                                </form>
-                            </div>
-                        )}
-                        {showAlert && (
-                            <div
-                                style={{ boxShadow: `7px 7px #${listColor}` }}
-                                className="absolute z-30 flex flex-col items-center border p-4 bg-white shadow-lg rounded"
-                            >
-                                <span className="text-md mb-2 text-center">Are you sure you want to delete your todo list?</span>
-                                <div className="flex justify-center">
-                                    <button
-                                        type="button"
-                                        onClick={() => setShowAlert(false)}
-                                        style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                        className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 p-2 rounded mr-2"
-                                    >
-                                        Cancel
-                                    </button>
-                                    <button
-                                        type="button"
-                                        onClick={() => dispatch({ type: 'delete_list', id })}
-                                        style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                        className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 p-2 rounded"
-                                    >
-                                        Delete
-                                    </button>
                                 </div>
-                            </div>
-                        )}
+                            )}
+                        </div>
                     </div>
                     {[...todos].reverse().map(t => <ToDo key={t.todoId} todoId={t.todoId} text={t.text} done={t.done} listColor={listColor} listId={id} dispatch={dispatch} />)}
                 </div>
                 <div className="place-self-end p-2">
                     <button
                         type="button"
-                        onClick={() => setIsVisible(true)}
+                        onClick={() => setModalsVisible(((prev) => ({ ...prev, newTodo: true })))}
                         style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
                         className="text-center cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 p-2 rounded"
                     >

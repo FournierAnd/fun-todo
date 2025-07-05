@@ -1,5 +1,5 @@
 "use client"
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { MdEdit, MdDelete, MdSave, MdClear } from "react-icons/md";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -14,11 +14,38 @@ interface ToDoProps {
 
 export default function ToDo({ todoId, text, done, listColor, listId, dispatch }: ToDoProps) {
 
-    const [isEditing, setIsEditing] = useState(false);
-    const [todoEditError, setTodoEditError] = useState("");
-    const [newText, setNewText] = useState(text);
+    const [isEditing, setIsEditing] = useState<Boolean>(false);
+    const [todoEditError, setTodoEditError] = useState<string>("");
+    const [newText, setNewText] = useState<string>(text);
     const [showAlert, setShowAlert] = useState<Boolean>(false);
+    const [shouldRender, setShouldRender] = useState(showAlert);
     const deleteTodoRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+
+        // If the click target is not inside the modal, close it
+        const handleModalClickOutside = (event: MouseEvent) => {
+            if (deleteTodoRef.current && !deleteTodoRef.current.contains(event.target as Node)) {
+                setShowAlert(false);
+            }
+        };
+
+        // If the modal is visible, add a 'mousedown' event listener
+        if (showAlert) {
+            document.addEventListener('mousedown', handleModalClickOutside);
+            setShouldRender(true);
+        } else {
+            // Delay unmount for the duration of the fade-out
+            const timeout = setTimeout(() => setShouldRender(false), 300); // Match Tailwind duration
+            return () => clearTimeout(timeout);
+        }
+
+        // Clean up function to remove the 'mousedown' event listener
+        return () => {
+            document.removeEventListener('mousedown', handleModalClickOutside);
+        };
+
+    }, [showAlert]);
 
     const handleEdit = () => {
 
@@ -142,33 +169,40 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
             ) : (
                 <></>
             )}
-            <div className="flex flex-col justify-center items-center">
-                {showAlert && (
-                    <div ref={deleteTodoRef}
-                        style={{ boxShadow: `7px 7px #${listColor}` }}
-                        className="absolute z-30 flex flex-col items-center border p-4 bg-white shadow-lg rounded"
-                    >
-                        <span className="mb-2 mr-2">Delete this todo?</span>
-                        <div>
-                            <button
-                                type="button"
-                                onClick={() => setShowAlert(false)}
-                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded mr-2"
-                            >
-                                Cancel
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => dispatch({ type: 'delete_todo', listId, todoId })}
-                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded"
-                            >
-                                Delete
-                            </button>
+            <div className="relative">
+                <div
+                    className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-30 flex flex-col justify-center items-center transform transition-all duration-300
+                              ${showAlert ? 'opacity-100 scale-100 pointer-events-auto' : 'opacity-0 scale-95 pointer-events-none -translate-x-1/2 -translate-y-1/2'}`}
+                >
+                    {shouldRender && (
+                        <div ref={deleteTodoRef}
+                            style={{ boxShadow: `7px 7px #${listColor}` }}
+                            className="border p-4 bg-white shadow-lg rounded"
+                        >
+                            <div className="text-center">
+                                <span>Delete this todo?</span>
+                            </div>
+                            <div className="flex flex-row justify-center mt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setShowAlert(false)}
+                                    style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                    className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 mr-2 rounded"
+                                >
+                                    Cancel
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => dispatch({ type: 'delete_todo', listId, todoId })}
+                                    style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                    className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded"
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
+                </div>
             </div>
         </>
     );
