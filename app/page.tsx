@@ -70,7 +70,7 @@ export default function Home() {
                     <div
                         ref={modalRef}
                         style={{ boxShadow: `7px 7px #ffe97a` }}
-                        className="border p-4 bg-white shadow-lg rounded"
+                        className="border p-4 bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
                     >
                         <form onSubmit={handleSubmit} className="flex flex-col items-center w-full">
                             <label className="flex flex-col md:flex-row md:items-center w-full mb-2">
@@ -93,11 +93,24 @@ export default function Home() {
                                 />
                             </label>
                             <div className="flex justify-center">
-                                <button type="button" onClick={() => setIsVisible(false)} className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] transition duration-500 p-2 rounded mr-2">Cancel</button>
-                                <button type="submit" className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] transition duration-500 p-2 rounded">Add</button>
+                                <button
+                                    type="button"
+                                    onClick={() => setIsVisible(false)}
+                                    className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] text-black dark:text-white dark:hover:text-black 
+                                            transition duration-500 p-2 rounded mr-2"
+                                >
+                                    Cancel
+                                </button>
+                                <button 
+                                    type="submit" 
+                                    className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] text-black dark:text-white dark:hover:text-black
+                                            transition duration-500 p-2 rounded"
+                                >
+                                    Add
+                                </button>
                             </div>
                             {listNameError && (
-                                <p className="text-red-500 text-sm mt-1">{listNameError}</p>
+                                <p className="text-red-500 dark:text-red-400 text-sm mt-1">{listNameError}</p>
                             )}
                         </form>
                     </div>

@@ -1,5 +1,8 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Normal CSS */
 @keyframes bounceOnce {
   0%, 100% { transform: translateY(0); }
   20% { transform: translateY(-20px); }

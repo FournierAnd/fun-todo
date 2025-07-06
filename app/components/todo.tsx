@@ -87,7 +87,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                         />
                     ) : (
                         <div className="relative ml-1 w-fit">
-                            <span className={`${done ? "text-gray-500" : "text-black"} break-words max-w-[225px] text-lg pl-1 z-10 relative`}> {text} </span>
+                            <span className={`${done ? "text-gray-500 dark:text-gray-300" : "text-black dark:text-white"} break-words max-w-[225px] text-lg pl-1 z-10 relative`}> {text} </span>
                             {done && (
                                 <svg
                                     viewBox="0 0 70 20"
@@ -123,7 +123,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                                 type="button"
                                 onClick={handleEdit}
                                 style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                className="text-black hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
+                                className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
                             >
                                 <MdSave />
                             </button>
@@ -131,7 +131,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                                 type="button"
                                 onClick={() => { setNewText(text); setIsEditing(false); }}
                                 style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                className="text-black hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
+                                className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
                             >
                                 <MdClear />
                             </button>
@@ -142,7 +142,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                                 type="button"
                                 onClick={() => setIsEditing(true)}
                                 style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                className="text-black hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
+                                className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
                             >
                                 <MdEdit />
                             </button>
@@ -150,7 +150,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                                 type="button"
                                 onClick={() => setShowAlert(true)}
                                 style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                className="text-black hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
+                                className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
                             >
                                 <MdDelete />
                             </button>
@@ -162,7 +162,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                 <>
                     <div>
                         {todoEditError && (
-                            <p className="text-red-500 text-sm ml-5 mt-1">{todoEditError}</p>
+                            <p className="text-red-500 dark:text-red-400 text-sm ml-5 mt-1">{todoEditError}</p>
                         )}
                     </div>
                 </>
@@ -177,7 +177,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                     {shouldRender && (
                         <div ref={deleteTodoRef}
                             style={{ boxShadow: `7px 7px #${listColor}` }}
-                            className="border p-4 bg-white shadow-lg rounded"
+                            className="border p-4 bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
                         >
                             <div className="text-center">
                                 <span>Delete this todo?</span>
@@ -187,7 +187,8 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                                     type="button"
                                     onClick={() => setShowAlert(false)}
                                     style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                    className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 mr-2 rounded"
+                                    className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
+                                            text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 mr-2 rounded"
                                 >
                                     Cancel
                                 </button>
@@ -195,7 +196,8 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                                     type="button"
                                     onClick={() => dispatch({ type: 'delete_todo', listId, todoId })}
                                     style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                    className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded"
+                                    className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
+                                            text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 rounded"
                                 >
                                     Delete
                                 </button>

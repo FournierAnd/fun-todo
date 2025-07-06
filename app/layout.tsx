@@ -5,6 +5,7 @@ import Footer from "./components/footer";
 import { TodoProvider } from "./contexts/todoContext";
 import DotBackground from "./components/dotBackground";
 import AnimatedTitle from "./components/animatedTitle";
+import ToggleDarkModeButton from "./components/toggleDarkMode";
 
 const kalam = Kalam({
     subsets: ['latin'],
@@ -22,8 +23,9 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en" className={kalam.className}>
-            <body className="relative flex flex-col min-h-screen m-1">
+        <html lang="en" className={`${kalam.className}`}>
+            <body className="relative flex flex-col min-h-screen m-1 bg-white dark:bg-[#212121] text-black dark:text-white">
+                <ToggleDarkModeButton />
                 <DotBackground />
                 <main className="flex-grow p-4 z-10">
                     <AnimatedTitle />

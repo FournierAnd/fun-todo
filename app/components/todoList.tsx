@@ -166,7 +166,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                     <></>
                 )}
             </div>
-            <div className="flex flex-col min-h-[250px] min-w-[250px] border bg-white shadow-lg rounded"
+            <div className="flex flex-col min-h-[250px] min-w-[250px] border bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
                 style={{ boxShadow: `-7px 7px #${listColor}` }}
             >
                 <div className="flex flex-row justify-end">
@@ -174,7 +174,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                         type="button"
                         onClick={() => setModalsVisible((prev) => ({ ...prev, changeColor: true }))}
                         style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                        className="text-black hover:text-[var(--dynamic-color)] transition duration-500 place-self-end p-1 cursor-pointer"
+                        className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 place-self-end p-1 cursor-pointer"
                     >
                         <MdColorLens size="1.5rem" />
                     </button>
@@ -182,7 +182,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                         type="button"
                         onClick={() => setModalsVisible(((prev) => ({ ...prev, deleteList: true })))}
                         style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                        className="text-black hover:text-[var(--dynamic-color)] transition duration-500 place-self-end p-1 cursor-pointer"
+                        className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 place-self-end p-1 cursor-pointer"
                     >
                         <MdClear size="1.5rem" />
                     </button>
@@ -206,7 +206,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                             <button
                                 type="submit"
                                 style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                className="text-black hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
+                                className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
                             >
                                 <MdSave />
                             </button>
@@ -214,13 +214,13 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                 type="button"
                                 onClick={() => { setNewName(name); setIsEditing(false); }}
                                 style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                className="text-black hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
+                                className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
                             >
                                 <MdClear />
                             </button>
 
                             {editError && (
-                                <p className="text-red-500 text-sm mt-1">{editError}</p>
+                                <p className="text-red-500 dark:text-red-400 text-sm mt-1">{editError}</p>
                             )}
                         </form>
                     </div>
@@ -231,7 +231,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                             type="button"
                             onClick={() => setIsEditing(true)}
                             style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                            className="text-black hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
+                            className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
                         >
                             <MdEdit />
                         </button>
@@ -245,7 +245,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                             {shouldRender.newTodo && (
                                 <div ref={newTodoRef}
                                     style={{ boxShadow: `7px 7px #${listColor}` }}
-                                    className="border p-4 bg-white shadow-lg rounded"
+                                    className="border p-4 bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
                                 >
                                     <form onSubmit={handleAddTodo} className="flex flex-col items-center w-full">
                                         <label className="flex flex-col items-center w-full mb-2">
@@ -272,14 +272,16 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                                 type="button"
                                                 onClick={() => setModalsVisible(((prev) => ({ ...prev, newTodo: false })))}
                                                 style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded mr-2"
+                                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
+                                                        text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 rounded mr-2"
                                             >
                                                 Cancel
                                             </button>
                                             <button
                                                 type="submit"
                                                 style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 cursor-pointer p-2 rounded"
+                                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
+                                                        text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 rounded"
                                             >
                                                 Add
                                             </button>
@@ -298,7 +300,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                 <div
                                     ref={deleteListRef}
                                     style={{ boxShadow: `7px 7px #${listColor}` }}
-                                    className="border p-4 bg-white shadow-lg rounded"
+                                    className="border p-4 bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
                                 >
                                     <div className="text-center">
                                         <span>Are you sure you want to delete your todo list?</span>
@@ -308,7 +310,8 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                             type="button"
                                             onClick={() => setModalsVisible(((prev) => ({ ...prev, deleteList: false })))}
                                             style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                            className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 p-2 mr-2 rounded"
+                                            className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
+                                                    text-black dark:text-white dark:hover:text-black transition duration-500 p-2 mr-2 rounded"
                                         >
                                             Cancel
                                         </button>
@@ -316,7 +319,8 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                             type="button"
                                             onClick={() => dispatch({ type: 'delete_list', id })}
                                             style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                            className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 p-2 rounded"
+                                            className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
+                                                    text-black dark:text-white dark:hover:text-black transition duration-500 p-2 rounded"
                                         >
                                             Delete
                                         </button>
@@ -332,7 +336,8 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                         type="button"
                         onClick={() => setModalsVisible(((prev) => ({ ...prev, newTodo: true })))}
                         style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                        className="text-center cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] transition duration-500 p-2 rounded"
+                        className="text-center cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
+                                text-black dark:text-white dark:hover:text-black transition duration-500 p-2 rounded"
                     >
                         Add Todo
                     </button>

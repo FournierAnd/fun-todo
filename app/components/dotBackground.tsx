@@ -85,8 +85,8 @@ export default function DotBackground() {
             {/* Old Dots */}
             {prevDots && prevDots.map((dot, i) => (
                 <Fragment key={`prev-${i}`}>
-                    {/* White background dot */}
-                    <circle cx={dot.x} cy={dot.y} r="2" fill="#fff" style={{ opacity: fadeOut ? 1 : 0, transition: 'opacity 1.5s ease' }} />
+                    {/* Background dot */}
+                    <circle cx={dot.x} cy={dot.y} r="3" className="fill-white dark:fill-[#212121]" style={{ opacity: fadeOut ? 1 : 0, transition: 'opacity 1.5s ease' }} />
 
                     {/* Animated dot */}
                     <circle cx={dot.x} cy={dot.y} r="2" fill="#bfbfbf" style={{ opacity: fadeOut ? 1 : 0, transition: 'opacity 1.5s ease' }}>
@@ -104,8 +104,8 @@ export default function DotBackground() {
             {/* New Dots */}
             {bouncingDots.map((dot, i) => (
                 <Fragment key={`new-${i}`}>
-                    {/* White background dot */}
-                    <circle cx={dot.x} cy={dot.y} r="2" fill="#fff" style={{ opacity: prevDots ? 0 : 1, transition: 'opacity 1s ease' }} />
+                    {/* Background dot */}
+                    <circle cx={dot.x} cy={dot.y} r="3" className="fill-white dark:fill-[#212121]" style={{ opacity: prevDots ? 0 : 1, transition: 'opacity 1s ease' }} />
 
                     {/* Animated dot */}
                     <circle cx={dot.x} cy={dot.y} r="2" fill="#bfbfbf" style={{ opacity: prevDots ? 0 : 1, transition: 'opacity 1s ease' }}>

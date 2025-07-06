@@ -27,7 +27,7 @@ export default function AnimatedTitle() {
             <div className="relative inline-block">
                 <h1
                     onMouseEnter={handleMouseEnter}
-                    className="text-center text-6xl p-10 bounce-on-hover cursor-pointer select-none"
+                    className="text-black dark:text-white text-center text-6xl p-10 bounce-on-hover cursor-pointer select-none"
                 >
                     Fun Todo
                 </h1>
