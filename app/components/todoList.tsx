@@ -3,6 +3,7 @@ import { useState, useRef, useEffect } from "react";
 import ToDo from "./todo";
 import { MdClear, MdColorLens, MdEdit, MdSave } from "react-icons/md";
 import { Todo } from "../reducers/listReducer";
+import { useTranslation } from "react-i18next";
 
 interface ToDoListProps {
     id: number;
@@ -14,6 +15,7 @@ interface ToDoListProps {
 
 export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListProps) {
 
+    const { t } = useTranslation();
     const [todoText, setTodoText] = useState<string>("");
     const [newName, setNewName] = useState<string>(name);
     const [isEditing, setIsEditing] = useState<Boolean>(false);
@@ -129,7 +131,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
         event.preventDefault();
 
         if (todoText.trim().length < 1) {
-            setAddTodoError("A todo cannot be empty.");
+            setAddTodoError(t("alert_todo"));
             return;
         }
 
@@ -250,12 +252,12 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                     <form onSubmit={handleAddTodo} className="flex flex-col items-center w-full">
                                         <label className="flex flex-col items-center w-full mb-2">
                                             <span className="text-md mb-2 text-center">
-                                                Name your new todo:
+                                                {t("new_todo")}
                                             </span>
                                             <input
                                                 type="text"
                                                 name="new-todo"
-                                                placeholder="My new todo..."
+                                                placeholder={t("new_todo_placeholder")}
                                                 value={todoText}
                                                 onChange={(e) => {
                                                     setTodoText(e.target.value);
@@ -275,7 +277,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                                 className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
                                                         text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 rounded mr-2"
                                             >
-                                                Cancel
+                                                {t("cancel")}
                                             </button>
                                             <button
                                                 type="submit"
@@ -283,7 +285,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                                 className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
                                                         text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 rounded"
                                             >
-                                                Add
+                                               {t("add_todo")}
                                             </button>
                                         </div>
                                         {addTodoError && (
@@ -303,7 +305,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                     className="border p-4 bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
                                 >
                                     <div className="text-center">
-                                        <span>Are you sure you want to delete your todo list?</span>
+                                        <span>{t("delete_list")}</span>
                                     </div>
                                     <div className="flex flex-row justify-center mt-2">
                                         <button
@@ -313,7 +315,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                             className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
                                                     text-black dark:text-white dark:hover:text-black transition duration-500 p-2 mr-2 rounded"
                                         >
-                                            Cancel
+                                            {t("cancel")}
                                         </button>
                                         <button
                                             type="button"
@@ -322,7 +324,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                             className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
                                                     text-black dark:text-white dark:hover:text-black transition duration-500 p-2 rounded"
                                         >
-                                            Delete
+                                            {t("delete")}
                                         </button>
                                     </div>
                                 </div>

@@ -1,0 +1,16 @@
+{
+  "add_list": "Nommez votre nouvelle liste:",
+  "add_list_placeholder": "Ma nouvelle liste!",
+  "delete_list": "Voulez-vous vraiment supprimer cette liste?",
+  "add_todo": "Ajouter",
+  "delete_todo": "Supprimer ce todo?",
+  "new_todo": "Nommez votre nouveau todo:",
+  "new_todo_placeholder": "Mon nouveau todo...",
+  "cancel": "Annuler",
+  "add": "Ajouter",
+  "delete": "Supprimer",
+  "alert_list": "Le nom de la liste ne peut être vide.",
+  "alert_todo": "Un todo ne peut être vide.",
+  "copyright": "Tous droits réservés",  
+  "language": "Langage"
+}

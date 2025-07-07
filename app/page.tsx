@@ -3,9 +3,11 @@ import { useEffect, useRef, useState } from "react";
 import ToDoList from "./components/todoList";
 import AddButtonDiv from "./components/addButton";
 import { useTodo } from "./contexts/todoContext";
+import { useTranslation } from "react-i18next";
 
 export default function Home() {
 
+    const { t } = useTranslation();
     const { lists, dispatch } = useTodo();
     const [listName, setListName] = useState<string>("");
     const [listNameError, setListNameError] = useState<string>("");
@@ -43,7 +45,7 @@ export default function Home() {
         event.preventDefault();
 
         if (listName.trim().length < 1) {
-            setListNameError("List name cannot be empty.");
+            setListNameError(t("alert_list"));
             return;
         }
 
@@ -75,7 +77,7 @@ export default function Home() {
                         <form onSubmit={handleSubmit} className="flex flex-col items-center w-full">
                             <label className="flex flex-col md:flex-row md:items-center w-full mb-2">
                                 <span className="text-md mb-2 md:mb-1 md:mr-2 text-center md:text-left">
-                                    Name your new todo list:
+                                    {t("add_list")}
                                 </span>
                                 <input
                                     type="text"
@@ -88,7 +90,7 @@ export default function Home() {
                                     onKeyDown={(e) => {
                                         if (e.key === 'Enter') handleSubmit(e);
                                     }}
-                                    placeholder="My Fun Todo list!"
+                                    placeholder={t("add_list_placeholder")}
                                     className="border rounded flex justify-center md:justify-start text-center md:text-left mx-0 md:mx-2 mb-2 pl-1"
                                 />
                             </label>
@@ -99,14 +101,14 @@ export default function Home() {
                                     className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] text-black dark:text-white dark:hover:text-black 
                                             transition duration-500 p-2 rounded mr-2"
                                 >
-                                    Cancel
+                                    {t("cancel")}
                                 </button>
                                 <button 
                                     type="submit" 
                                     className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] text-black dark:text-white dark:hover:text-black
                                             transition duration-500 p-2 rounded"
                                 >
-                                    Add
+                                    {t("add")}
                                 </button>
                             </div>
                             {listNameError && (

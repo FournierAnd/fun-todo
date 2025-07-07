@@ -6,6 +6,7 @@ import { TodoProvider } from "./contexts/todoContext";
 import DotBackground from "./components/dotBackground";
 import AnimatedTitle from "./components/animatedTitle";
 import ToggleDarkModeButton from "./components/toggleDarkMode";
+import LanguageButton from "./components/languageButton";
 
 const kalam = Kalam({
     subsets: ['latin'],
@@ -25,7 +26,10 @@ export default function RootLayout({
     return (
         <html lang="en" className={`${kalam.className}`}>
             <body className="relative flex flex-col min-h-screen m-1 bg-white dark:bg-[#212121] text-black dark:text-white">
-                <ToggleDarkModeButton />
+                <div className="flex justify-end">
+                    <LanguageButton />
+                    <ToggleDarkModeButton />
+                </div>
                 <DotBackground />
                 <main className="flex-grow p-4 z-10">
                     <AnimatedTitle />

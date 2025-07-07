@@ -1,0 +1,16 @@
+{
+  "add_list": "Name your new todo list:",
+  "add_list_placeholder": "My Fun todo list!",
+  "delete_list": "Are you sure you want to delete your todo list?",
+  "add_todo": "Add Todo",
+  "delete_todo": "Delete this todo?",
+  "new_todo": "Name your new todo:",
+  "new_todo_placeholder": "My new todo...",
+  "cancel": "Cancel",
+  "add": "Add",
+  "delete": "Delete",
+  "alert_list": "The list's name cannot be empty.",
+  "alert_todo": "A todo cannot be empty.",
+  "copyright": "All rights reserved",  
+  "language": "Language"
+}

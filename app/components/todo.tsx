@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MdEdit, MdDelete, MdSave, MdClear } from "react-icons/md";
 import { motion, AnimatePresence } from "motion/react";
+import { useTranslation } from "react-i18next";
 
 interface ToDoProps {
     todoId: number;
@@ -14,6 +15,7 @@ interface ToDoProps {
 
 export default function ToDo({ todoId, text, done, listColor, listId, dispatch }: ToDoProps) {
 
+    const { t } = useTranslation();
     const [isEditing, setIsEditing] = useState<Boolean>(false);
     const [todoEditError, setTodoEditError] = useState<string>("");
     const [newText, setNewText] = useState<string>(text);
@@ -50,7 +52,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
     const handleEdit = () => {
 
         if (newText.trim().length < 1) {
-            setTodoEditError("A todo cannot be empty.");
+            setTodoEditError(t("alert_todo"));
             return;
         }
 
@@ -180,7 +182,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                             className="border p-4 bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
                         >
                             <div className="text-center">
-                                <span>Delete this todo?</span>
+                                <span>{t("delete_todo")}</span>
                             </div>
                             <div className="flex flex-row justify-center mt-2">
                                 <button
@@ -190,7 +192,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                                     className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
                                             text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 mr-2 rounded"
                                 >
-                                    Cancel
+                                    {t("cancel")}
                                 </button>
                                 <button
                                     type="button"
@@ -199,7 +201,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                                     className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
                                             text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 rounded"
                                 >
-                                    Delete
+                                    {t("delete")}
                                 </button>
                             </div>
                         </div>
