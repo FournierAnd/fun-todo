@@ -4,16 +4,23 @@ import ToDoList from "./components/todoList";
 import AddButtonDiv from "./components/addButton";
 import { useTodo } from "./contexts/todoContext";
 import { useTranslation } from "react-i18next";
+import { MdClear } from "react-icons/md";
+
+const defaultErrors = {
+  error_1: false,
+  error_2: false,
+};
 
 export default function Home() {
 
     const { t } = useTranslation();
     const { lists, dispatch } = useTodo();
     const [listName, setListName] = useState<string>("");
-    const [listNameError, setListNameError] = useState<string>("");
-    const [isVisible, setIsVisible] = useState<Boolean>(false);
+    const [isVisible, setIsVisible] = useState<boolean>(false);
     const [shouldRender, setShouldRender] = useState(isVisible);
     const modalRef = useRef<HTMLDivElement>(null);
+
+    const [showListNameError, setShowListNameError] = useState(defaultErrors);
 
     useEffect(() => {
 
@@ -29,6 +36,7 @@ export default function Home() {
             document.addEventListener('mousedown', handleModalClickOutside);
             setShouldRender(true);
         } else {
+            handleCancel();
             // Delay unmount for the duration of the fade-out
             const timeout = setTimeout(() => setShouldRender(false), 300); // Match Tailwind duration
             return () => clearTimeout(timeout);
@@ -45,9 +53,15 @@ export default function Home() {
         event.preventDefault();
 
         if (listName.trim().length < 1) {
-            setListNameError(t("alert_list"));
+            setShowListNameError(((prev) => ({ ...prev, error_1: true })));
             return;
         }
+
+        if (listName.trim().length > 50) {
+            setShowListNameError(((prev) => ({ ...prev, error_2: true })));
+            return;
+        }
+
 
         const lastList = lists[lists.length - 1];
         const lastId = typeof lastList?.id === "number" ? lastList.id : 0;
@@ -62,6 +76,12 @@ export default function Home() {
         setIsVisible(false);
     }
 
+    const handleCancel = () => {
+        setListName("");
+        setIsVisible(false);
+        setShowListNameError(defaultErrors);
+    }
+
     return (
         <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
             <AddButtonDiv setIsVisible={setIsVisible} />
@@ -72,49 +92,63 @@ export default function Home() {
                     <div
                         ref={modalRef}
                         style={{ boxShadow: `7px 7px #ffe97a` }}
-                        className="border p-4 bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
+                        className="border bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
                     >
-                        <form onSubmit={handleSubmit} className="flex flex-col items-center w-full">
-                            <label className="flex flex-col md:flex-row md:items-center w-full mb-2">
-                                <span className="text-md mb-2 md:mb-1 md:mr-2 text-center md:text-left">
-                                    {t("add_list")}
-                                </span>
-                                <input
-                                    type="text"
-                                    name="list-name"
-                                    value={listName}
-                                    onChange={(e) => {
-                                        setListName(e.target.value);
-                                        if (listNameError) setListNameError("");
-                                    }}
-                                    onKeyDown={(e) => {
-                                        if (e.key === 'Enter') handleSubmit(e);
-                                    }}
-                                    placeholder={t("add_list_placeholder")}
-                                    className="border rounded flex justify-center md:justify-start text-center md:text-left mx-0 md:mx-2 mb-2 pl-1"
-                                />
-                            </label>
-                            <div className="flex justify-center">
-                                <button
-                                    type="button"
-                                    onClick={() => setIsVisible(false)}
-                                    className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] text-black dark:text-white dark:hover:text-black 
-                                            transition duration-500 p-2 rounded mr-2"
-                                >
-                                    {t("cancel")}
-                                </button>
-                                <button 
-                                    type="submit" 
-                                    className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] text-black dark:text-white dark:hover:text-black
-                                            transition duration-500 p-2 rounded"
-                                >
-                                    {t("add")}
-                                </button>
-                            </div>
-                            {listNameError && (
-                                <p className="text-red-500 dark:text-red-400 text-sm mt-1">{listNameError}</p>
-                            )}
-                        </form>
+                        <div className="flex flex-row justify-end">
+                            <button
+                                type="button"
+                                onClick={() => handleCancel()}
+                                className="text-black dark:text-white hover:text-[#ffe97a] transition duration-500 place-self-end p-1 cursor-pointer"
+                            >
+                                <MdClear size="1.5rem" />
+                            </button>
+                        </div>
+                        <div className="pt-2 p-4">
+                            <form onSubmit={handleSubmit} className="flex flex-col items-center w-full">
+                                <label className="flex flex-col md:flex-row md:items-center w-full mb-2">
+                                    <span className="text-md mb-2 md:mb-1 md:mr-2 text-center md:text-left">
+                                        {t("add_list")}
+                                    </span>
+                                    <input
+                                        type="text"
+                                        name="list-name"
+                                        value={listName}
+                                        onChange={(e) => {
+                                            setListName(e.target.value);
+                                            if (showListNameError) setShowListNameError(defaultErrors);
+                                        }}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') handleSubmit(e);
+                                        }}
+                                        placeholder={t("add_list_placeholder")}
+                                        className="border rounded flex justify-center md:justify-start text-center md:text-left mx-0 md:mx-2 mb-2 pl-1"
+                                    />
+                                </label>
+                                <div className="flex justify-center">
+                                    <button
+                                        type="button"
+                                        onClick={() => handleCancel()}
+                                        className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] text-black dark:text-white dark:hover:text-black 
+                                                transition duration-500 p-2 rounded mr-2"
+                                    >
+                                        {t("cancel")}
+                                    </button>
+                                    <button
+                                        type="submit"
+                                        className="cursor-pointer border ring-2 ring-[#ffe97a] hover:bg-[#ffe97a] text-black dark:text-white dark:hover:text-black
+                                                transition duration-500 p-2 rounded"
+                                    >
+                                        {t("add")}
+                                    </button>
+                                </div>
+                                {showListNameError.error_1 && (
+                                    <p className="text-red-500 dark:text-red-400 text-sm mt-1">{t("alert_list_1")}</p>
+                                )}
+                                {showListNameError.error_2 && (
+                                    <p className="text-red-500 dark:text-red-400 text-sm mt-1">{t("alert_list_2")}</p>
+                                )}
+                            </form>
+                        </div>
                     </div>
                 )}
             </div>

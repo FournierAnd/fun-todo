@@ -3,7 +3,7 @@ import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { IoAddCircle } from "react-icons/io5";
 
 interface ToDoListProps {
-    setIsVisible: Dispatch<SetStateAction<Boolean>>;
+    setIsVisible: Dispatch<SetStateAction<boolean>>;
 }
 
 export default function AddButtonDiv({ setIsVisible }: ToDoListProps) {

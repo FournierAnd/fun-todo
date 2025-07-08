@@ -25,7 +25,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en" className={`${kalam.className}`}>
-            <body className="relative flex flex-col min-h-screen m-1 bg-white dark:bg-[#212121] text-black dark:text-white">
+            <body className="relative flex flex-col min-w-[250px] min-h-screen m-1 bg-white dark:bg-[#212121] text-black dark:text-white">
                 <div className="flex justify-end">
                     <LanguageButton />
                     <ToggleDarkModeButton />

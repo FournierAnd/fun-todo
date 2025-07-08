@@ -13,11 +13,16 @@ interface ToDoProps {
     dispatch: React.Dispatch<any>;
 }
 
+const defaultErrors = {
+  error_1: false,
+  error_2: false,
+};
+
 export default function ToDo({ todoId, text, done, listColor, listId, dispatch }: ToDoProps) {
 
     const { t } = useTranslation();
     const [isEditing, setIsEditing] = useState<Boolean>(false);
-    const [todoEditError, setTodoEditError] = useState<string>("");
+    const [showTodoEditError, setShowTodoEditError] = useState(defaultErrors);
     const [newText, setNewText] = useState<string>(text);
     const [showAlert, setShowAlert] = useState<Boolean>(false);
     const [shouldRender, setShouldRender] = useState(showAlert);
@@ -52,7 +57,12 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
     const handleEdit = () => {
 
         if (newText.trim().length < 1) {
-            setTodoEditError(t("alert_todo"));
+            setShowTodoEditError(((prev) => ({ ...prev, error_1: true })));
+            return;
+        }
+
+        if (newText.trim().length > 50) {
+            setShowTodoEditError(((prev) => ({ ...prev, error_2: true })));
             return;
         }
 
@@ -68,6 +78,12 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
         setIsEditing(false);
     }
 
+    const handleCancel = () => {
+        setNewText(text);
+        setIsEditing(false);
+        setShowTodoEditError(defaultErrors);
+    }
+
     return (
         <>
             <div className="inline-flex justify-between relative">
@@ -80,7 +96,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                             value={newText}
                             onChange={(e) => {
                                 setNewText(e.target.value);
-                                if (todoEditError) setTodoEditError("");
+                                if (showTodoEditError) setShowTodoEditError(defaultErrors);
                             }}
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') handleEdit();
@@ -88,7 +104,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                             className="border-2 border-black rounded ml-2 pl-1"
                         />
                     ) : (
-                        <div className="relative ml-1 w-fit">
+                        <div className="relative inline-flex items-center justify-center flex-wrap ml-1">
                             <span className={`${done ? "text-gray-500 dark:text-gray-300" : "text-black dark:text-white"} break-words max-w-[225px] text-lg pl-1 z-10 relative`}> {text} </span>
                             {done && (
                                 <svg
@@ -131,7 +147,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                             </button>
                             <button
                                 type="button"
-                                onClick={() => { setNewText(text); setIsEditing(false); }}
+                                onClick={() => handleCancel()}
                                 style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
                                 className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
                             >
@@ -163,8 +179,11 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
             {isEditing ? (
                 <>
                     <div>
-                        {todoEditError && (
-                            <p className="text-red-500 dark:text-red-400 text-sm ml-5 mt-1">{todoEditError}</p>
+                        {showTodoEditError.error_1 && (
+                            <p className="text-red-500 dark:text-red-400 text-sm ml-5 mt-1">{t("alert_todo_1")}</p>
+                        )}
+                        {showTodoEditError.error_2 && (
+                            <p className="text-red-500 dark:text-red-400 text-sm ml-5 mt-1">{t("alert_todo_2")}</p>
                         )}
                     </div>
                 </>
@@ -179,30 +198,41 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                     {shouldRender && (
                         <div ref={deleteTodoRef}
                             style={{ boxShadow: `7px 7px #${listColor}` }}
-                            className="border p-4 bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
+                            className="border bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
                         >
-                            <div className="text-center">
-                                <span>{t("delete_todo")}</span>
-                            </div>
-                            <div className="flex flex-row justify-center mt-2">
+                            <div className="flex flex-row justify-end">
                                 <button
                                     type="button"
                                     onClick={() => setShowAlert(false)}
-                                    style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                    className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
-                                            text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 mr-2 rounded"
+                                    className="text-black dark:text-white hover:text-[#ffe97a] transition duration-500 place-self-end p-1 cursor-pointer"
                                 >
-                                    {t("cancel")}
+                                    <MdClear size="1.5rem" />
                                 </button>
-                                <button
-                                    type="button"
-                                    onClick={() => dispatch({ type: 'delete_todo', listId, todoId })}
-                                    style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                    className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
-                                            text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 rounded"
-                                >
-                                    {t("delete")}
-                                </button>
+                            </div>
+                            <div className="pt-2 p-4">
+                                <div className="text-center">
+                                    <span>{t("delete_todo")}</span>
+                                </div>
+                                <div className="flex flex-row justify-center mt-2">
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowAlert(false)}
+                                        style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                        className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
+                                                text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 mr-2 rounded"
+                                    >
+                                        {t("cancel")}
+                                    </button>
+                                    <button
+                                        type="button"
+                                        onClick={() => dispatch({ type: 'delete_todo', listId, todoId })}
+                                        style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                        className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
+                                                text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 rounded"
+                                    >
+                                        {t("delete")}
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     )}

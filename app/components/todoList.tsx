@@ -13,14 +13,20 @@ interface ToDoListProps {
     dispatch: React.Dispatch<any>;
 }
 
+const defaultErrors = {
+  edit_error_1: false,
+  edit_error_2: false,
+  add_error_1: false,
+  add_error_2: false,
+};
+
 export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListProps) {
 
     const { t } = useTranslation();
     const [todoText, setTodoText] = useState<string>("");
     const [newName, setNewName] = useState<string>(name);
-    const [isEditing, setIsEditing] = useState<Boolean>(false);
-    const [editError, setEditError] = useState<string>("");
-    const [addTodoError, setAddTodoError] = useState<string>("");
+    const [isEditing, setIsEditing] = useState<boolean>(false);
+    const [showError, setShowError] = useState(defaultErrors);
     const [listColor, setListColor] = useState<string>(color ? color : "ffe97a");
 
     const [modalsVisible, setModalsVisible] = useState({
@@ -77,7 +83,10 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                 setShouldRender((prev) => ({ ...prev, [key]: true }));
 
             } else if (shouldRender[key as keyof typeof shouldRender]) {
-
+                if (key === "newTodo") {
+                    setTodoText("");
+                    setShowError(defaultErrors);
+                }
                 // Delay unmount for the duration of the fade-out
                 const timeout = setTimeout(() => {
                     setShouldRender((prev) => ({ ...prev, [key]: false }));
@@ -98,7 +107,12 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
         event.preventDefault();
 
         if (newName.trim().length < 1) {
-            setEditError("List name cannot be empty.");
+            setShowError(((prev) => ({ ...prev, edit_error_1: true })));
+            return;
+        }
+
+        if (newName.trim().length > 50) {
+            setShowError(((prev) => ({ ...prev, edit_error_2: true })));
             return;
         }
 
@@ -131,7 +145,12 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
         event.preventDefault();
 
         if (todoText.trim().length < 1) {
-            setAddTodoError(t("alert_todo"));
+            setShowError(((prev) => ({ ...prev, add_error_1: true })));
+            return;
+        }
+
+        if (todoText.trim().length > 50) {
+            setShowError(((prev) => ({ ...prev, add_error_2: true })));
             return;
         }
 
@@ -141,18 +160,30 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
             text: todoText,
         })
 
-        setTodoText('');
+        setTodoText("");
         setModalsVisible(((prev) => ({ ...prev, newTodo: false })));
+    }
+
+    const handleCancelEdit = () => {
+        setNewName(name);
+        setIsEditing(false);
+        setShowError(defaultErrors);
+    }
+
+    const handleCancelAddTodo = () => {
+        setTodoText("");
+        setModalsVisible(((prev) => ({ ...prev, newTodo: false })));
+        setShowError(defaultErrors);
     }
 
     return (
         <div>
             <div
-                className={`bottom-0 translate-x-[75px] -translate-y-[5px] transform transition-all duration-300
+                className={`bottom-0 -translate-y-[5px] transform transition-all duration-300
 					        ${modalsVisible.changeColor ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none translate-y-[5px]'}`}
             >
                 {shouldRender.changeColor ? (
-                    <div ref={changingColorRef} className="flex flex-row w-[300px] h-[50px] gap-2 p-2 mb-2 z-30">
+                    <div ref={changingColorRef} className="flex flex-row w-full h-[50px] gap-2 p-2 mb-2 z-30">
                         {availableColors.map((c) => (
                             <button
                                 key={c}
@@ -198,7 +229,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                 value={newName}
                                 onChange={(e) => {
                                     setNewName(e.target.value);
-                                    if (editError) setEditError("");
+                                    if (showError) setShowError(defaultErrors);
                                 }}
                                 onKeyDown={(e) => {
                                     if (e.key === 'Enter') handleEditList(e);
@@ -214,21 +245,24 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                             </button>
                             <button
                                 type="button"
-                                onClick={() => { setNewName(name); setIsEditing(false); }}
+                                onClick={() => handleCancelEdit()}
                                 style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
                                 className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
                             >
                                 <MdClear />
                             </button>
 
-                            {editError && (
-                                <p className="text-red-500 dark:text-red-400 text-sm mt-1">{editError}</p>
+                            {showError.edit_error_1 && (
+                                <p className="text-red-500 dark:text-red-400 text-sm mt-1">{t("alert_list_1")}</p>
+                            )}
+                            {showError.edit_error_2 && (
+                                <p className="text-red-500 dark:text-red-400 text-sm mt-1">{t("alert_list_2")}</p>
                             )}
                         </form>
                     </div>
                 ) : (
-                    <div className="inline-flex justify-center p-2">
-                        <h1 className="mr-2 text-xl"> {name} </h1>
+                    <div className="inline-flex items-center justify-center p-2 flex-wrap">
+                        <h1 className="mr-2 text-xl break-words max-w-[200px]"> {name} </h1>
                         <button
                             type="button"
                             onClick={() => setIsEditing(true)}
@@ -247,51 +281,65 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                             {shouldRender.newTodo && (
                                 <div ref={newTodoRef}
                                     style={{ boxShadow: `7px 7px #${listColor}` }}
-                                    className="border p-4 bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
+                                    className="border bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
                                 >
-                                    <form onSubmit={handleAddTodo} className="flex flex-col items-center w-full">
-                                        <label className="flex flex-col items-center w-full mb-2">
-                                            <span className="text-md mb-2 text-center">
-                                                {t("new_todo")}
-                                            </span>
-                                            <input
-                                                type="text"
-                                                name="new-todo"
-                                                placeholder={t("new_todo_placeholder")}
-                                                value={todoText}
-                                                onChange={(e) => {
-                                                    setTodoText(e.target.value);
-                                                    if (addTodoError) setAddTodoError("");
-                                                }}
-                                                onKeyDown={(e) => {
-                                                    if (e.key === 'Enter') handleAddTodo(e);
-                                                }}
-                                                className="border rounded flex justify-center text-center mb-2 pl-1"
-                                            />
-                                        </label>
-                                        <div className="flex justify-center">
-                                            <button
-                                                type="button"
-                                                onClick={() => setModalsVisible(((prev) => ({ ...prev, newTodo: false })))}
-                                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
-                                                        text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 rounded mr-2"
-                                            >
-                                                {t("cancel")}
-                                            </button>
-                                            <button
-                                                type="submit"
-                                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                                className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
-                                                        text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 rounded"
-                                            >
-                                               {t("add_todo")}
-                                            </button>
-                                        </div>
-                                        {addTodoError && (
-                                            <p className="text-red-500 text-sm mt-1">{addTodoError}</p>
-                                        )}
-                                    </form>
+                                    <div className="flex flex-row justify-end">
+                                        <button
+                                            type="button"
+                                            onClick={() => handleCancelAddTodo()}
+                                            className="text-black dark:text-white hover:text-[#ffe97a] transition duration-500 place-self-end p-1 cursor-pointer"
+                                        >
+                                            <MdClear size="1.5rem" />
+                                        </button>
+                                    </div>
+                                    <div className="pt-2 p-4">
+                                        <form onSubmit={handleAddTodo} className="flex flex-col items-center w-full">
+                                            <label className="flex flex-col items-center w-full mb-2">
+                                                <span className="text-md mb-2 text-center">
+                                                    {t("new_todo")}
+                                                </span>
+                                                <input
+                                                    type="text"
+                                                    name="new-todo"
+                                                    placeholder={t("new_todo_placeholder")}
+                                                    value={todoText}
+                                                    onChange={(e) => {
+                                                        setTodoText(e.target.value);
+                                                        if (showError) setShowError(defaultErrors);
+                                                    }}
+                                                    onKeyDown={(e) => {
+                                                        if (e.key === 'Enter') handleAddTodo(e);
+                                                    }}
+                                                    className="border rounded flex justify-center text-center mb-2 pl-1"
+                                                />
+                                            </label>
+                                            <div className="flex justify-center">
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleCancelAddTodo()}
+                                                    style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                                    className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
+                                                            text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 rounded mr-2"
+                                                >
+                                                    {t("cancel")}
+                                                </button>
+                                                <button
+                                                    type="submit"
+                                                    style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                                    className="border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
+                                                            text-black dark:text-white dark:hover:text-black transition duration-500 cursor-pointer p-2 rounded"
+                                                >
+                                                    {t("add_todo")}
+                                                </button>
+                                            </div>
+                                            {showError.add_error_1 && (
+                                                <p className="text-red-500 text-sm mt-1">{t("alert_todo_1")}</p>
+                                            )}
+                                            {showError.add_error_2 && (
+                                                <p className="text-red-500 text-sm mt-1">{t("alert_todo_2")}</p>
+                                            )}
+                                        </form>
+                                    </div>
                                 </div>
                             )}
                         </div>
@@ -302,30 +350,41 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                                 <div
                                     ref={deleteListRef}
                                     style={{ boxShadow: `7px 7px #${listColor}` }}
-                                    className="border p-4 bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
+                                    className="border bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
                                 >
-                                    <div className="text-center">
-                                        <span>{t("delete_list")}</span>
-                                    </div>
-                                    <div className="flex flex-row justify-center mt-2">
+                                    <div className="flex flex-row justify-end">
                                         <button
                                             type="button"
                                             onClick={() => setModalsVisible(((prev) => ({ ...prev, deleteList: false })))}
-                                            style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                            className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
-                                                    text-black dark:text-white dark:hover:text-black transition duration-500 p-2 mr-2 rounded"
+                                            className="text-black dark:text-white hover:text-[#ffe97a] transition duration-500 place-self-end p-1 cursor-pointer"
                                         >
-                                            {t("cancel")}
+                                            <MdClear size="1.5rem" />
                                         </button>
-                                        <button
-                                            type="button"
-                                            onClick={() => dispatch({ type: 'delete_list', id })}
-                                            style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                                            className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
-                                                    text-black dark:text-white dark:hover:text-black transition duration-500 p-2 rounded"
-                                        >
-                                            {t("delete")}
-                                        </button>
+                                    </div>
+                                    <div className="pt-2 p-4">
+                                        <div className="text-center">
+                                            <span>{t("delete_list")}</span>
+                                        </div>
+                                        <div className="flex flex-row justify-center mt-2">
+                                            <button
+                                                type="button"
+                                                onClick={() => setModalsVisible(((prev) => ({ ...prev, deleteList: false })))}
+                                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                                className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
+                                                        text-black dark:text-white dark:hover:text-black transition duration-500 p-2 mr-2 rounded"
+                                            >
+                                                {t("cancel")}
+                                            </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => dispatch({ type: 'delete_list', id })}
+                                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                                className="cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
+                                                        text-black dark:text-white dark:hover:text-black transition duration-500 p-2 rounded"
+                                            >
+                                                {t("delete")}
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -341,7 +400,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                         className="text-center cursor-pointer border ring-2 ring-[var(--dynamic-color)] hover:bg-[var(--dynamic-color)] 
                                 text-black dark:text-white dark:hover:text-black transition duration-500 p-2 rounded"
                     >
-                        Add Todo
+                        {t("add_todo")}
                     </button>
                 </div>
             </div>
