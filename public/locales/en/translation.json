@@ -12,7 +12,7 @@
     "alert_list_1": "The list's name cannot be empty.",
     "alert_list_2": "The list's name cannot be longer than 50 characters.",
     "alert_todo_1": "A todo cannot be empty.",
-    "alert_todo_2": "A todo cannot be longer than 50 characters.",
+    "alert_todo_2": "A todo cannot be longer than 30 characters.",
     "copyright": "All rights reserved",
     "language": "Language"
 }

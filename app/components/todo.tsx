@@ -61,7 +61,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
             return;
         }
 
-        if (newText.trim().length > 50) {
+        if (newText.trim().length > 30) {
             setShowTodoEditError(((prev) => ({ ...prev, error_2: true })));
             return;
         }

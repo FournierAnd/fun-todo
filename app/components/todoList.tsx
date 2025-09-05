@@ -149,7 +149,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
             return;
         }
 
-        if (todoText.trim().length > 50) {
+        if (todoText.trim().length > 30) {
             setShowError(((prev) => ({ ...prev, add_error_2: true })));
             return;
         }
@@ -251,7 +251,6 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                             >
                                 <MdClear />
                             </button>
-
                             {showError.edit_error_1 && (
                                 <p className="text-red-500 dark:text-red-400 text-sm mt-1">{t("alert_list_1")}</p>
                             )}

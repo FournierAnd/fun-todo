@@ -10,9 +10,9 @@
     "add": "Ajouter",
     "delete": "Supprimer",
     "alert_list_1": "Le nom de la liste ne peut être vide.",
-    "alert_list_2": "Le nom de la liste ne peut être que 50 caractères.",
+    "alert_list_2": "Le nom de la liste ne peut dépasser 50 caractères.",
     "alert_todo_1": "Un todo ne peut être vide.",
-    "alert_todo_2": "Un todo ne peut contenir plus de 50 caractères.",
+    "alert_todo_2": "Un todo ne peut contenir plus de 30 caractères.",
     "copyright": "Tous droits réservés",
     "language": "Langage"
 }

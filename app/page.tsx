@@ -123,7 +123,17 @@ export default function Home() {
                                         placeholder={t("add_list_placeholder")}
                                         className="border rounded flex justify-center md:justify-start text-center md:text-left mx-0 md:mx-2 mb-2 pl-1"
                                     />
-                                </label>
+                                </label>                                
+                                {showListNameError.error_1 && (
+                                    <div className="flex justify-center items-center text-center pb-3">
+                                        <p className="text-red-500 dark:text-red-400 text-sm">{t("alert_list_1")}</p>
+                                    </div>
+                                )}
+                                {showListNameError.error_2 && (
+                                    <div className="flex justify-center items-center text-center pb-3">
+                                        <p className="text-red-500 dark:text-red-400 text-sm">{t("alert_list_2")}</p>
+                                    </div>
+                                )}
                                 <div className="flex justify-center">
                                     <button
                                         type="button"
@@ -141,12 +151,6 @@ export default function Home() {
                                         {t("add")}
                                     </button>
                                 </div>
-                                {showListNameError.error_1 && (
-                                    <p className="text-red-500 dark:text-red-400 text-sm mt-1">{t("alert_list_1")}</p>
-                                )}
-                                {showListNameError.error_2 && (
-                                    <p className="text-red-500 dark:text-red-400 text-sm mt-1">{t("alert_list_2")}</p>
-                                )}
                             </form>
                         </div>
                     </div>

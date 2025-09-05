@@ -44,6 +44,7 @@ export default function AddButtonDiv({ setIsVisible }: ToDoListProps) {
                         ? ({ ["--dynamic-color"]: `#${hoverColor}` } as React.CSSProperties)
                         : undefined
                 }
+                title="Create a new todo list"
                 className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
             >
                 <IoAddCircle size="4rem" />
