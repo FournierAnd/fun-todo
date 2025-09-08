@@ -35,7 +35,7 @@ export default function AddButtonDiv({ setIsVisible }: ToDoListProps) {
     }
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[250px] min-w-[250px]">
+        <div className="flex flex-col items-center justify-center min-h-[250px] w-[300px]">
             <button
                 onClick={() => setIsVisible(true)}
                 onMouseEnter={handleHover}

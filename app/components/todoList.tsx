@@ -199,7 +199,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                     <></>
                 )}
             </div>
-            <div className="flex flex-col min-h-[250px] min-w-[250px] border bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
+            <div className="flex flex-col min-h-[250px] w-[300px] border bg-white dark:bg-[#5a5a5a] shadow-lg rounded"
                 style={{ boxShadow: `-7px 7px #${listColor}` }}
             >
                 <div className="flex flex-row justify-end">

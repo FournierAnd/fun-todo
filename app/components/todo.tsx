@@ -13,9 +13,9 @@ interface ToDoProps {
     dispatch: React.Dispatch<any>;
 }
 
+// Add more if needed
 const defaultErrors = {
-  error_1: false,
-  error_2: false,
+    error_1: false,
 };
 
 export default function ToDo({ todoId, text, done, listColor, listId, dispatch }: ToDoProps) {
@@ -61,11 +61,6 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
             return;
         }
 
-        if (newText.trim().length > 30) {
-            setShowTodoEditError(((prev) => ({ ...prev, error_2: true })));
-            return;
-        }
-
         dispatch({
             type: 'edit_todo',
             listId,
@@ -87,11 +82,15 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
     return (
         <>
             <div className="inline-flex justify-between relative">
-                <div className="inline-flex">
-                    <input style={{ accentColor: `#${listColor}` }} type="checkbox" onChange={() => dispatch({ type: 'toggle_todo', listId, todoId })} checked={done} />
+                <div className="inline-flex items-start">
+                    <input
+                        type="checkbox"
+                        onChange={() => dispatch({ type: 'toggle_todo', listId, todoId })}
+                        checked={done}
+                        style={{ accentColor: `#${listColor}` }}
+                        className="mt-[5px]" />
                     {isEditing ? (
-                        <input
-                            type="text"
+                        <textarea
                             name="edit-field"
                             value={newText}
                             onChange={(e) => {
@@ -101,36 +100,21 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') handleEdit();
                             }}
-                            className="border-2 border-black rounded ml-2 pl-1"
+                            rows={4}
+                            cols={20}
+                            className={`ml-2 pl-1 break-words max-w-[225px] text-lg z-10 relative bg-transparent resize-none focus:outline-none border border-black" ${done
+                                ? "text-gray-500 dark:text-gray-300"
+                                : "text-black dark:text-white"
+                                }`}
                         />
                     ) : (
                         <div className="relative inline-flex items-center justify-center flex-wrap ml-1">
-                            <span className={`${done ? "text-gray-500 dark:text-gray-300" : "text-black dark:text-white"} break-words max-w-[225px] text-lg pl-1 z-10 relative`}> {text} </span>
-                            {done && (
-                                <svg
-                                    viewBox="0 0 70 20"
-                                    className="absolute top-1/2 left-0 w-full h-[20px] -translate-y-1/2 z-10"
-                                    preserveAspectRatio="none"
-                                >
-                                    <path
-                                        d="m0 12c4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-8 8 0 4 0 8-6 8 0"
-                                        stroke={`#${listColor}`}
-                                        strokeWidth="2"
-                                        fill="none"
-                                        strokeLinecap="round"
-                                        strokeDasharray="100"
-                                        strokeDashoffset="100"
-                                    >
-                                        <animate
-                                            attributeName="stroke-dashoffset"
-                                            from="100"
-                                            to="0"
-                                            dur="0.6s"
-                                            fill="freeze"
-                                        />
-                                    </path>
-                                </svg>
-                            )}
+                            <span
+                                style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
+                                className={`${done ? "text-gray-500 dark:text-gray-300 line-through decoration-[var(--dynamic-color)]" : "text-black dark:text-white"} break-words max-w-[225px] text-lg pl-1 z-10 relative`}
+                            >
+                                {text}
+                            </span>
                         </div>
                     )}
                 </div>
@@ -181,9 +165,6 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                     <div>
                         {showTodoEditError.error_1 && (
                             <p className="text-red-500 dark:text-red-400 text-sm ml-5 mt-1">{t("alert_todo_1")}</p>
-                        )}
-                        {showTodoEditError.error_2 && (
-                            <p className="text-red-500 dark:text-red-400 text-sm ml-5 mt-1">{t("alert_todo_2")}</p>
                         )}
                     </div>
                 </>
