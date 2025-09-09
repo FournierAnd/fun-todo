@@ -6,33 +6,33 @@ interface ToDoListProps {
     setIsVisible: Dispatch<SetStateAction<boolean>>;
 }
 
+const availableColors = [
+    "ffe97a",
+    "f7a6c2",
+    "33d7d4",
+    "b5e28c",
+    "ffa970",
+    "d1b7e6",
+];
+
+const getRandomColor = () => {
+    const randomNumber = Math.floor(Math.random() * availableColors.length);
+    return availableColors[randomNumber];
+}
+
 export default function AddButtonDiv({ setIsVisible }: ToDoListProps) {
 
     const [hoverColor, setHoverColor] = useState<string>("ffe97a");
     const [isClient, setIsClient] = useState(false);
 
-    const availableColors = [
-        "ffe97a",
-        "f7a6c2",
-        "33d7d4",
-        "b5e28c",
-        "ffa970",
-        "d1b7e6",
-    ];
+    const handleHover = () => {
+        setHoverColor(getRandomColor());
+    }
 
     useEffect(() => {
         setIsClient(true);
         setHoverColor(getRandomColor());
     }, []);
-
-    const getRandomColor = () => {
-        const randomNumber = Math.floor(Math.random() * availableColors.length);
-        return availableColors[randomNumber];
-    }
-
-    const handleHover = () => {
-        setHoverColor(getRandomColor());
-    }
 
     return (
         <div className="flex flex-col items-center justify-center min-h-[250px] w-[300px]">

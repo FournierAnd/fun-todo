@@ -2,7 +2,7 @@
 import { useState, useRef, useEffect } from "react";
 import ToDo from "./todo";
 import { MdClear, MdColorLens, MdEdit, MdSave } from "react-icons/md";
-import { Todo } from "../reducers/listReducer";
+import { Action, Todo } from "../reducers/listReducer";
 import { useTranslation } from "react-i18next";
 
 interface ToDoListProps {
@@ -12,7 +12,7 @@ interface ToDoListProps {
     todos: Todo[];
     editingTodoListId: number | null;
     setEditingTodoListId: React.Dispatch<React.SetStateAction<number | null>>;
-    dispatch: React.Dispatch<any>;
+    dispatch: React.Dispatch<Action>;
 }
 
 const defaultErrors = {
@@ -21,6 +21,15 @@ const defaultErrors = {
     add_error_1: false,
     add_error_2: false,
 };
+
+const availableColors = [
+    "ffe97a",
+    "f7a6c2",
+    "33d7d4",
+    "b5e28c",
+    "ffa970",
+    "d1b7e6",
+];
 
 export default function ToDoList({ id, name, color, todos, editingTodoListId, setEditingTodoListId, dispatch }: ToDoListProps) {
 
@@ -50,15 +59,6 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
     const changingColorRef = useRef<HTMLDivElement>(null);
     const deleteListRef = useRef<HTMLDivElement>(null);
 
-    const availableColors = [
-        "ffe97a",
-        "f7a6c2",
-        "33d7d4",
-        "b5e28c",
-        "ffa970",
-        "d1b7e6",
-    ];
-
     useEffect(() => {
 
         const modals = [
@@ -84,9 +84,9 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
 
             // If the modal is visible, render it
             if (isVisible) {
-
+               
                 setShouldRender((prev) => ({ ...prev, [key]: true }));
-
+            
             } else if (shouldRender[key as keyof typeof shouldRender]) {
                 if (key === "newTodo") {
                     setTodoText("");
@@ -94,6 +94,7 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
                 }
                 // Delay unmount for the duration of the fade-out
                 const timeout = setTimeout(() => {
+                    
                     setShouldRender((prev) => ({ ...prev, [key]: false }));
                 }, 300); // Match Tailwind duration
 

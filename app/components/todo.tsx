@@ -2,6 +2,7 @@
 import { useEffect, useRef, useState } from "react";
 import { MdEdit, MdDelete, MdSave, MdClear } from "react-icons/md";
 import { useTranslation } from "react-i18next";
+import { Action } from "../reducers/listReducer";
 
 interface ToDoProps {
     todoId: number;
@@ -11,7 +12,7 @@ interface ToDoProps {
     listId: number;
     editingTodoId: number | null;
     setEditingTodoId: React.Dispatch<React.SetStateAction<number | null>>;
-    dispatch: React.Dispatch<any>;
+    dispatch: React.Dispatch<Action>;
 }
 
 // Add more if needed
@@ -24,7 +25,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, editingTod
     const { t } = useTranslation();
     const [showTodoEditError, setShowTodoEditError] = useState(defaultErrors);
     const [newText, setNewText] = useState<string>(text);
-    const [showAlert, setShowAlert] = useState<Boolean>(false);
+    const [showAlert, setShowAlert] = useState<boolean>(false);
     const [shouldRender, setShouldRender] = useState(showAlert);
     const deleteTodoRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);

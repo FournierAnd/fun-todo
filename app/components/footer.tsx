@@ -11,6 +11,7 @@ export default function Footer() {
 
     const [ready, setReady] = useState(false);
 
+    
     useEffect(() => {
         if (i18n.isInitialized) {
             setReady(true);
@@ -19,6 +20,7 @@ export default function Footer() {
                 setReady(true);
             });
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     if (!ready) return null;
