@@ -1,4 +1,4 @@
-# ✅ Learn Crochet  
+# ✅ FUN TODO
 
 A playful and interactive React app to manage your todos.
 Organize your tasks, mark them as done, and enjoy a smooth, animated experience.
