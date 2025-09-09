@@ -11,7 +11,7 @@ interface ToDoProps {
     listId: number;
     editingTodoId: number | null;
     setEditingTodoId: React.Dispatch<React.SetStateAction<number | null>>;
-    dispatch: React.Dispatch<any>;    
+    dispatch: React.Dispatch<any>;
 }
 
 // Add more if needed
@@ -27,8 +27,18 @@ export default function ToDo({ todoId, text, done, listColor, listId, editingTod
     const [showAlert, setShowAlert] = useState<Boolean>(false);
     const [shouldRender, setShouldRender] = useState(showAlert);
     const deleteTodoRef = useRef<HTMLDivElement>(null);
+    const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     const isEditing = editingTodoId === todoId;
+
+    useEffect(() => {
+        if (isEditing && textareaRef.current) {
+            const el = textareaRef.current;
+            el.style.height = "auto";
+            el.style.height = el.scrollHeight + "px";
+            el.style.width = "225px";
+        }
+    }, [isEditing]);
 
     useEffect(() => {
 
@@ -93,6 +103,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, editingTod
                         className="mt-[5px]" />
                     {isEditing ? (
                         <textarea
+                            ref={textareaRef}
                             name="edit-field"
                             value={newText}
                             onChange={(e) => {
@@ -102,9 +113,13 @@ export default function ToDo({ todoId, text, done, listColor, listId, editingTod
                             onKeyDown={(e) => {
                                 if (e.key === 'Enter') handleEdit();
                             }}
-                            rows={4}
-                            cols={20}
-                            className={`ml-2 pl-1 break-words max-w-[225px] text-lg z-10 relative bg-transparent resize-none focus:outline-none border border-black ${done
+                            onInput={(e) => {
+                                const el = e.target as HTMLTextAreaElement;
+                                el.style.height = "auto"; // reset
+                                el.style.height = el.scrollHeight + "px"; // grow with content
+                                el.style.width = "225px";
+                            }}
+                            className={`ml-2 pl-1 text-lg z-10 relative bg-transparent resize-none overflow-hidden focus:outline-none border border-black box-border leading-snug ${done
                                 ? "text-gray-500 dark:text-gray-300"
                                 : "text-black dark:text-white"
                                 }`}
