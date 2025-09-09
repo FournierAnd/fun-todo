@@ -3,7 +3,7 @@
 A playful and interactive React app to manage your todos.
 Organize your tasks, mark them as done, and enjoy a smooth, animated experience.
 
-👉 **Live Demo:** [https://funtodo.vercel.app](https://funtodo.vercel.app)  
+👉 **Live Demo:** [https://fun-todo-alpha.vercel.app/](https://fun-todo-alpha.vercel.app/)  
 
 ---
 
