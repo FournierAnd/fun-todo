@@ -1,7 +1,6 @@
 "use client"
 import { useEffect, useRef, useState } from "react";
 import { MdEdit, MdDelete, MdSave, MdClear } from "react-icons/md";
-import { motion, AnimatePresence } from "motion/react";
 import { useTranslation } from "react-i18next";
 
 interface ToDoProps {
@@ -10,7 +9,9 @@ interface ToDoProps {
     done: boolean;
     listColor: string;
     listId: number;
-    dispatch: React.Dispatch<any>;
+    editingTodoId: number | null;
+    setEditingTodoId: React.Dispatch<React.SetStateAction<number | null>>;
+    dispatch: React.Dispatch<any>;    
 }
 
 // Add more if needed
@@ -18,15 +19,16 @@ const defaultErrors = {
     error_1: false,
 };
 
-export default function ToDo({ todoId, text, done, listColor, listId, dispatch }: ToDoProps) {
+export default function ToDo({ todoId, text, done, listColor, listId, editingTodoId, setEditingTodoId, dispatch }: ToDoProps) {
 
     const { t } = useTranslation();
-    const [isEditing, setIsEditing] = useState<Boolean>(false);
     const [showTodoEditError, setShowTodoEditError] = useState(defaultErrors);
     const [newText, setNewText] = useState<string>(text);
     const [showAlert, setShowAlert] = useState<Boolean>(false);
     const [shouldRender, setShouldRender] = useState(showAlert);
     const deleteTodoRef = useRef<HTMLDivElement>(null);
+
+    const isEditing = editingTodoId === todoId;
 
     useEffect(() => {
 
@@ -70,12 +72,12 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                 done: false
             }
         })
-        setIsEditing(false);
+        setEditingTodoId(null);
     }
 
     const handleCancel = () => {
         setNewText(text);
-        setIsEditing(false);
+        setEditingTodoId(null);
         setShowTodoEditError(defaultErrors);
     }
 
@@ -102,7 +104,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                             }}
                             rows={4}
                             cols={20}
-                            className={`ml-2 pl-1 break-words max-w-[225px] text-lg z-10 relative bg-transparent resize-none focus:outline-none border border-black" ${done
+                            className={`ml-2 pl-1 break-words max-w-[225px] text-lg z-10 relative bg-transparent resize-none focus:outline-none border border-black ${done
                                 ? "text-gray-500 dark:text-gray-300"
                                 : "text-black dark:text-white"
                                 }`}
@@ -142,7 +144,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, dispatch }
                         <>
                             <button
                                 type="button"
-                                onClick={() => setIsEditing(true)}
+                                onClick={() => setEditingTodoId(todoId)}
                                 style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
                                 className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
                             >

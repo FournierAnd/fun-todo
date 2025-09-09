@@ -10,24 +10,29 @@ interface ToDoListProps {
     name: string;
     color: string;
     todos: Todo[];
+    editingTodoListId: number | null;
+    setEditingTodoListId: React.Dispatch<React.SetStateAction<number | null>>;
     dispatch: React.Dispatch<any>;
 }
 
 const defaultErrors = {
-  edit_error_1: false,
-  edit_error_2: false,
-  add_error_1: false,
-  add_error_2: false,
+    edit_error_1: false,
+    edit_error_2: false,
+    add_error_1: false,
+    add_error_2: false,
 };
 
-export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListProps) {
+export default function ToDoList({ id, name, color, todos, editingTodoListId, setEditingTodoListId, dispatch }: ToDoListProps) {
 
     const { t } = useTranslation();
     const [todoText, setTodoText] = useState<string>("");
     const [newName, setNewName] = useState<string>(name);
-    const [isEditing, setIsEditing] = useState<boolean>(false);
     const [showError, setShowError] = useState(defaultErrors);
     const [listColor, setListColor] = useState<string>(color ? color : "ffe97a");
+
+    const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
+
+    const isEditing = editingTodoListId === id;
 
     const [modalsVisible, setModalsVisible] = useState({
         newTodo: false,
@@ -124,7 +129,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
             }
         })
 
-        setIsEditing(false);
+        setEditingTodoListId(null);
     }
 
     const handleChangeListColor = (color: string) => {
@@ -166,7 +171,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
 
     const handleCancelEdit = () => {
         setNewName(name);
-        setIsEditing(false);
+        setEditingTodoListId(null);
         setShowError(defaultErrors);
     }
 
@@ -207,7 +212,10 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                         type="button"
                         onClick={() => setModalsVisible((prev) => ({ ...prev, changeColor: true }))}
                         style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
-                        className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 place-self-end p-1 cursor-pointer"
+                        className={`hover:text-[var(--dynamic-color)] transition duration-500 place-self-end p-1 cursor-pointer ${modalsVisible.changeColor
+                            ? "text-[var(--dynamic-color)] dark:text-[var(--dynamic-color)]"
+                            : "text-black dark:text-white"
+                            }`}
                     >
                         <MdColorLens size="1.5rem" />
                     </button>
@@ -264,7 +272,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                         <h1 className="mr-2 text-xl break-words max-w-[200px]"> {name} </h1>
                         <button
                             type="button"
-                            onClick={() => setIsEditing(true)}
+                            onClick={() => setEditingTodoListId(id)}
                             style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
                             className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
                         >
@@ -389,7 +397,7 @@ export default function ToDoList({ id, name, color, todos, dispatch }: ToDoListP
                             )}
                         </div>
                     </div>
-                    {[...todos].reverse().map(t => <ToDo key={t.todoId} todoId={t.todoId} text={t.text} done={t.done} listColor={listColor} listId={id} dispatch={dispatch} />)}
+                    {[...todos].reverse().map(t => <ToDo key={t.todoId} todoId={t.todoId} text={t.text} done={t.done} listColor={listColor} listId={id} editingTodoId={editingTodoId} setEditingTodoId={setEditingTodoId} dispatch={dispatch} />)}
                 </div>
                 <div className="place-self-end p-2">
                     <button
