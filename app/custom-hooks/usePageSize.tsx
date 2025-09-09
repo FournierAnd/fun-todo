@@ -8,7 +8,7 @@ export default function usePageSize() {
 
         const handleResize = () => {
             setSize({ width: window.innerWidth, height: document.documentElement.scrollHeight });
-            console.log("width:", window.innerWidth, "height:", document.documentElement.scrollHeight);
+            //console.log("width:", window.innerWidth, "height:", document.documentElement.scrollHeight);
         };
 
         handleResize();

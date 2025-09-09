@@ -16,7 +16,10 @@ i18n
             escapeValue: false,
         },
         backend: {
-            loadPath: '/locales/{{lng}}/translation.json',
+            loadPath:
+                typeof window === "undefined"
+                    ? `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/locales/{{lng}}/translation.json`
+                    : "/locales/{{lng}}/translation.json",
         },
         detection: {
             order: ['localStorage', 'navigator'],

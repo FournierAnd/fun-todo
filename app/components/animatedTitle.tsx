@@ -1,6 +1,6 @@
 "use client"
-import { useState } from "react"
-import { MdCheck } from "react-icons/md"
+import { useState } from "react";
+import { MdCheck } from "react-icons/md";
 
 export default function AnimatedTitle() {
 

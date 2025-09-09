@@ -1,6 +1,6 @@
 "use client"
-import { useEffect, useState } from "react"
-import { MdLightMode, MdNightlight } from "react-icons/md"
+import { useEffect, useState } from "react";
+import { MdLightMode, MdNightlight } from "react-icons/md";
 
 export default function ToggleDarkModeButton() {
   const [isDark, setIsDark] = useState(false)
