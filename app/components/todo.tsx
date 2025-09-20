@@ -35,6 +35,8 @@ export default function ToDo({ todoId, text, done, listColor, listId, editingTar
     useEffect(() => {
         if (isEditingTodo && textareaRef.current) {
             const el = textareaRef.current;
+            el.focus();
+            el.selectionStart = el.selectionEnd = el.value.length;
             el.style.height = "auto";
             el.style.height = el.scrollHeight + "px";
             el.style.width = "225px";
@@ -120,9 +122,11 @@ export default function ToDo({ todoId, text, done, listColor, listId, editingTar
                                 el.style.height = el.scrollHeight + "px"; // grow with content
                                 el.style.width = "225px";
                             }}
-                            className={`ml-2 pl-1 text-lg z-10 relative bg-transparent resize-none overflow-hidden focus:outline-none border border-black box-border leading-snug ${done
-                                ? "text-gray-500 dark:text-gray-300"
-                                : "text-black dark:text-white"
+                            className={`ml-2 pl-1 text-lg z-10 relative bg-transparent resize-none overflow-hidden 
+                                    focus:outline-none border-0 border-b border-black dark:border-white box-border leading-none
+                                    ${done
+                                    ? "text-gray-500 dark:text-gray-300"
+                                    : "text-black dark:text-white"
                                 }`}
                         />
                     ) : (
