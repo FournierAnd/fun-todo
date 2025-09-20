@@ -59,6 +59,8 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
     const changingColorRef = useRef<HTMLDivElement>(null);
     const deleteListRef = useRef<HTMLDivElement>(null);
 
+    const colorButtonRef = useRef<HTMLButtonElement>(null);
+
     useEffect(() => {
 
         const modals = [
@@ -72,6 +74,11 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
         const handleClickOutside = (event: MouseEvent) => {
             modals.forEach(({ key, ref }) => {
                 if (modalsVisible[key as keyof typeof modalsVisible] && ref.current && !ref.current.contains(event.target as Node)) {
+                    // Exclude the colorButtonRef from 'outside clicks'
+                    if (key === "changeColor" && colorButtonRef.current?.contains(event.target as Node)) {
+                        return;
+                    }
+
                     setModalsVisible((prev) => ({ ...prev, [key]: false }));
                 }
             });
@@ -84,9 +91,9 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
 
             // If the modal is visible, render it
             if (isVisible) {
-               
+
                 setShouldRender((prev) => ({ ...prev, [key]: true }));
-            
+
             } else if (shouldRender[key as keyof typeof shouldRender]) {
                 if (key === "newTodo") {
                     setTodoText("");
@@ -94,7 +101,7 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
                 }
                 // Delay unmount for the duration of the fade-out
                 const timeout = setTimeout(() => {
-                    
+
                     setShouldRender((prev) => ({ ...prev, [key]: false }));
                 }, 300); // Match Tailwind duration
 
@@ -210,8 +217,9 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
             >
                 <div className="flex flex-row justify-end">
                     <button
+                        ref={colorButtonRef}
                         type="button"
-                        onClick={() => setModalsVisible((prev) => ({ ...prev, changeColor: true }))}
+                        onClick={() => setModalsVisible((prev) => ({ ...prev, changeColor: !prev.changeColor }))}
                         style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
                         className={`hover:text-[var(--dynamic-color)] transition duration-500 place-self-end p-1 cursor-pointer ${modalsVisible.changeColor
                             ? "text-[var(--dynamic-color)] dark:text-[var(--dynamic-color)]"
