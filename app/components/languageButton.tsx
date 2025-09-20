@@ -1,23 +1,27 @@
 "use client"
 import "@/i18n";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 
 export default function LanguageButton() {
-
     const { i18n } = useTranslation();
     const [chosenLanguage, setChosenLanguage] = useState("en");
 
-    const changeLanguage = (lng: string) => {
-        if (lng === 'en') {
-            i18n.changeLanguage(lng);
-            localStorage.setItem("i18nextLng", "en");
-            setChosenLanguage("en");
-        } else {
-            localStorage.setItem("i18nextLng", lng);
-            i18n.changeLanguage(lng);
-            setChosenLanguage("fr");
+    useEffect(() => {
+        const current = i18n.language || localStorage.getItem("i18nextLng") || "en";
+        const normalized = current.startsWith("fr") ? "fr" : "en";
+        if (current !== normalized) {
+            i18n.changeLanguage(normalized);
+            localStorage.setItem("i18nextLng", normalized);
         }
+        setChosenLanguage(normalized);
+    }, [i18n.language]);
+
+    const changeLanguage = (lng: string) => {
+        const normalized = lng.startsWith("fr") ? "fr" : "en";
+        i18n.changeLanguage(normalized);
+        localStorage.setItem("i18nextLng", normalized);
+        setChosenLanguage(normalized);
     };
 
     return (
