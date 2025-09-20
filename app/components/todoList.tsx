@@ -39,8 +39,6 @@ export default function ToDoList({ id, name, color, todos, editingTarget, setEdi
     const [showError, setShowError] = useState(defaultErrors);
     const [listColor, setListColor] = useState<string>(color ? color : "ffe97a");
 
-    const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
-
     const isEditingList = editingTarget?.type === "list" && editingTarget.id === id;
 
     const [modalsVisible, setModalsVisible] = useState({
