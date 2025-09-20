@@ -20,7 +20,7 @@ export default function Home() {
     const [shouldRender, setShouldRender] = useState(isVisible);
     const modalRef = useRef<HTMLDivElement>(null);
     const [showListNameError, setShowListNameError] = useState(defaultErrors);
-    const [editingTodoListId, setEditingTodoListId] = useState<number | null>(null);
+    const [editingTarget, setEditingTarget] = useState<null | { type: "list" | "todo", id: number }>(null);
 
     useEffect(() => {
 
@@ -156,7 +156,7 @@ export default function Home() {
                     </div>
                 )}
             </div>
-            {[...lists].reverse().map(l => <ToDoList key={l.id} id={l.id} name={l.name} color={l.color} todos={l.todos} editingTodoListId={editingTodoListId} setEditingTodoListId={setEditingTodoListId} dispatch={dispatch} />)}
+            {[...lists].reverse().map(l => <ToDoList key={l.id} id={l.id} name={l.name} color={l.color} todos={l.todos} editingTarget={editingTarget} setEditingTarget={setEditingTarget} dispatch={dispatch} />)}
         </div>
     );
 }

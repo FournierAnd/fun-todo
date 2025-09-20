@@ -10,8 +10,8 @@ interface ToDoProps {
     done: boolean;
     listColor: string;
     listId: number;
-    editingTodoId: number | null;
-    setEditingTodoId: React.Dispatch<React.SetStateAction<number | null>>;
+    editingTarget: { type: "list" | "todo"; id: number; } | null
+    setEditingTarget: React.Dispatch<React.SetStateAction<{ type: "list" | "todo"; id: number; } | null>>
     dispatch: React.Dispatch<Action>;
 }
 
@@ -20,7 +20,7 @@ const defaultErrors = {
     error_1: false,
 };
 
-export default function ToDo({ todoId, text, done, listColor, listId, editingTodoId, setEditingTodoId, dispatch }: ToDoProps) {
+export default function ToDo({ todoId, text, done, listColor, listId, editingTarget, setEditingTarget, dispatch }: ToDoProps) {
 
     const { t } = useTranslation();
     const [showTodoEditError, setShowTodoEditError] = useState(defaultErrors);
@@ -30,16 +30,16 @@ export default function ToDo({ todoId, text, done, listColor, listId, editingTod
     const deleteTodoRef = useRef<HTMLDivElement>(null);
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-    const isEditing = editingTodoId === todoId;
+    const isEditingTodo = editingTarget?.type === "todo" && editingTarget.id === todoId;
 
     useEffect(() => {
-        if (isEditing && textareaRef.current) {
+        if (isEditingTodo && textareaRef.current) {
             const el = textareaRef.current;
             el.style.height = "auto";
             el.style.height = el.scrollHeight + "px";
             el.style.width = "225px";
         }
-    }, [isEditing]);
+    }, [isEditingTodo]);
 
     useEffect(() => {
 
@@ -83,12 +83,12 @@ export default function ToDo({ todoId, text, done, listColor, listId, editingTod
                 done: false
             }
         })
-        setEditingTodoId(null);
+        setEditingTarget(null);
     }
 
     const handleCancel = () => {
         setNewText(text);
-        setEditingTodoId(null);
+        setEditingTarget(null);
         setShowTodoEditError(defaultErrors);
     }
 
@@ -102,7 +102,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, editingTod
                         checked={done}
                         style={{ accentColor: `#${listColor}` }}
                         className="mt-[5px]" />
-                    {isEditing ? (
+                    {isEditingTodo ? (
                         <textarea
                             ref={textareaRef}
                             name="edit-field"
@@ -137,7 +137,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, editingTod
                     )}
                 </div>
                 <div className="inline-flex flex-nowrap">
-                    {isEditing ? (
+                    {isEditingTodo ? (
                         <>
                             <button
                                 type="button"
@@ -160,7 +160,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, editingTod
                         <>
                             <button
                                 type="button"
-                                onClick={() => setEditingTodoId(todoId)}
+                                onClick={() => setEditingTarget({ type: "todo", id: todoId })}
                                 style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
                                 className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
                             >
@@ -178,7 +178,7 @@ export default function ToDo({ todoId, text, done, listColor, listId, editingTod
                     )}
                 </div>
             </div>
-            {isEditing ? (
+            {isEditingTodo ? (
                 <>
                     <div>
                         {showTodoEditError.error_1 && (

@@ -10,8 +10,8 @@ interface ToDoListProps {
     name: string;
     color: string;
     todos: Todo[];
-    editingTodoListId: number | null;
-    setEditingTodoListId: React.Dispatch<React.SetStateAction<number | null>>;
+    editingTarget: { type: "list" | "todo"; id: number; } | null
+    setEditingTarget: React.Dispatch<React.SetStateAction<{ type: "list" | "todo"; id: number; } | null>>
     dispatch: React.Dispatch<Action>;
 }
 
@@ -31,7 +31,7 @@ const availableColors = [
     "d1b7e6",
 ];
 
-export default function ToDoList({ id, name, color, todos, editingTodoListId, setEditingTodoListId, dispatch }: ToDoListProps) {
+export default function ToDoList({ id, name, color, todos, editingTarget, setEditingTarget, dispatch }: ToDoListProps) {
 
     const { t } = useTranslation();
     const [todoText, setTodoText] = useState<string>("");
@@ -41,7 +41,7 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
 
     const [editingTodoId, setEditingTodoId] = useState<number | null>(null);
 
-    const isEditing = editingTodoListId === id;
+    const isEditingList = editingTarget?.type === "list" && editingTarget.id === id;
 
     const [modalsVisible, setModalsVisible] = useState({
         newTodo: false,
@@ -137,7 +137,7 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
             }
         })
 
-        setEditingTodoListId(null);
+        setEditingTarget(null);
     }
 
     const handleChangeListColor = (color: string) => {
@@ -179,7 +179,7 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
 
     const handleCancelEdit = () => {
         setNewName(name);
-        setEditingTodoListId(null);
+        setEditingTarget(null);
         setShowError(defaultErrors);
     }
 
@@ -237,7 +237,7 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
                         <MdClear size="1.5rem" />
                     </button>
                 </div>
-                {isEditing ? (
+                {isEditingList ? (
                     <div className="inline-flex justify-center p-2">
                         <form onSubmit={handleEditList}>
                             <input
@@ -281,7 +281,7 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
                         <h1 className="mr-2 text-xl break-words max-w-[200px]"> {name} </h1>
                         <button
                             type="button"
-                            onClick={() => setEditingTodoListId(id)}
+                            onClick={() => setEditingTarget({ type: "list", id })}
                             style={{ ["--dynamic-color"]: `#${listColor}` } as React.CSSProperties}
                             className="text-black dark:text-white hover:text-[var(--dynamic-color)] transition duration-500 cursor-pointer"
                         >
@@ -406,7 +406,7 @@ export default function ToDoList({ id, name, color, todos, editingTodoListId, se
                             )}
                         </div>
                     </div>
-                    {[...todos].reverse().map(t => <ToDo key={t.todoId} todoId={t.todoId} text={t.text} done={t.done} listColor={listColor} listId={id} editingTodoId={editingTodoId} setEditingTodoId={setEditingTodoId} dispatch={dispatch} />)}
+                    {[...todos].reverse().map(t => <ToDo key={t.todoId} todoId={t.todoId} text={t.text} done={t.done} listColor={listColor} listId={id} editingTarget={editingTarget} setEditingTarget={setEditingTarget} dispatch={dispatch} />)}
                 </div>
                 <div className="place-self-end p-2">
                     <button
